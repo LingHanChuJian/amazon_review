@@ -25,7 +25,9 @@ python app_review.py
 > review_order_id  用来标识的唯一 id , 随便填写
 
 > amazon_buyer_url  amazon 上 directedId 需要去掉 amzn1.account.
+
 > 例子: https://www.amazon.com/gp/profile/amzn1.account.AHP3GBGMQ7HBYZCJWUJG72JFR22A?ie=UTF8&ref_=ya_d_l_profile
+
 > amazon_buyer_url 为 AHP3GBGMQ7HBYZCJWUJG72JFR22A
 
 > country 国家简码 US CN 等等
