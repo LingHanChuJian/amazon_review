@@ -49,7 +49,7 @@ class AmazonMain:
                 return self.get_data(token, types)
             else:
                 print('所有评论查找完成')
-                return None
+                return self.review_data
         else:
             return self.review_data
 
