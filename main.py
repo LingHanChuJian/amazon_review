@@ -30,6 +30,7 @@ class AmazonMain:
             return None
         print(token, types, name, rank)
         self.review_data['buyer_name'] = name
+        self.review_data['buyer_rank'] = rank
         return self.get_data(token, ','.join(eval(types)))
 
     def get_data(self, token, types):
