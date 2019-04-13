@@ -40,7 +40,7 @@ class AmazonMain:
             if self.is_page():
                 if self.page >= MAX_PAGE:
                     print('查找到最大页数')
-                    return None
+                    return self.review_data
                 print('查找下一页数据')
                 random_time = random.randint(5, 10)
                 print('等待时间 %s' % random_time)
