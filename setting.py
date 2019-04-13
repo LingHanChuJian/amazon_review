@@ -1,6 +1,5 @@
-import os
-
-BASH_DIR = os.path.dirname(os.path.abspath(__file__))
+# 查找最大页数
+MAX_PAGE = 2
 
 # 请求状态 status
 REQUEST_STATUS = ({
@@ -38,3 +37,6 @@ RE_TYPE = r'enabledContributionTypes":(\[.*?\])'
 
 # 获取name
 RE_NAME = r'"nameHeaderData":{"name":"(.*?)"'
+
+# 获取排名
+RE_RANK = r'"rank":"(.*?)"'

@@ -1,5 +1,5 @@
 import re
-from setting import RE_TOKEN, RE_TYPE, RE_NAME
+from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK
 
 
 class AmazonDispose:
@@ -23,3 +23,9 @@ class AmazonDispose:
         if not name:
             return None
         return name.group(1)
+
+    def get_rank(self):
+        rank = re.search(RE_RANK, self.content, re.M)
+        if not rank:
+            return None
+        return rank.group(1)

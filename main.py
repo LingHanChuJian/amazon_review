@@ -2,6 +2,7 @@ import time
 import random
 from fake_useragent import UserAgent
 
+from setting import MAX_PAGE
 from utils.api import *
 from utils.dispose import AmazonDispose
 from utils.request import AmazonRequests
@@ -9,6 +10,7 @@ from utils.request import AmazonRequests
 
 class AmazonMain:
     def __init__(self, data):
+        self.page = 1
         self.data = data
         self.param = dict()
         self.review = dict()
@@ -23,10 +25,10 @@ class AmazonMain:
         if html.find("Robot Check") > -1:
             return None
         dispose = AmazonDispose(html)
-        token, types, name = dispose.get_token(), dispose.get_type(), dispose.get_name()
-        if not token or not types or not name:
+        token, types, name, rank = dispose.get_token(), dispose.get_type(), dispose.get_name(), dispose.get_rank()
+        if not token or not types or not name or not rank:
             return None
-        print(token, types, name)
+        print(token, types, name, rank)
         self.review_data['buyer_name'] = name
         return self.get_data(token, ','.join(eval(types)))
 
@@ -35,10 +37,14 @@ class AmazonMain:
         self.review = self.get_amazon_review()
         if not self.get_review_data():
             if self.is_page():
+                if self.page >= MAX_PAGE:
+                    print('查找到最大页数')
+                    return None
                 print('查找下一页数据')
                 random_time = random.randint(5, 10)
                 print('等待时间 %s' % random_time)
                 time.sleep(random_time)
+                self.page += 1
                 return self.get_data(token, types)
             else:
                 print('所有评论查找完成')
