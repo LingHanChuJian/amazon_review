@@ -21,16 +21,21 @@ class AmazonMain:
     def start(self):
         html = self.get_amazon_html()
         if not html:
+            print('没有数据')
             return None
         if html.find("Robot Check") > -1:
+            print('机器人')
             return None
         dispose = AmazonDispose(html)
         token, types, name, rank = dispose.get_token(), dispose.get_type(), dispose.get_name(), dispose.get_rank()
-        if not token or not types or not name or not rank:
+        if name:
+            self.review_data['buyer_name'] = name
+        if rank:
+            self.review_data['buyer_rank'] = rank
+        print(name, rank)
+        if not token or not types:
             return None
-        print(token, types, name, rank)
-        self.review_data['buyer_name'] = name
-        self.review_data['buyer_rank'] = rank
+        print(token, types)
         return self.get_data(token, ','.join(eval(types)))
 
     def get_data(self, token, types):
@@ -64,6 +69,7 @@ class AmazonMain:
         return self.request_message(response, 'json')
 
     def request_message(self, response, mode):
+        print(response.status_code)
         if response.status_code != 200:
             return None
         if mode == 'json':

@@ -9,23 +9,23 @@ class AmazonDispose:
     def get_token(self):
         token = re.search(RE_TOKEN, self.content, re.M)
         if not token:
-            return None
+            return ''
         return token.group(1)
 
     def get_type(self):
         types = re.search(RE_TYPE, self.content, re.M)
         if not types:
-            return None
+            return ''
         return types.group(1)
 
     def get_name(self):
         name = re.search(RE_NAME, self.content, re.M)
         if not name:
-            return None
+            return ''
         return name.group(1)
 
     def get_rank(self):
         rank = re.search(RE_RANK, self.content, re.M)
         if not rank:
-            return None
+            return ''
         return rank.group(1)

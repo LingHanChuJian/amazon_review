@@ -1,6 +1,6 @@
 import re
 
-from setting import RE_TOKEN, RE_TYPE, RE_NAME
+from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK
 from main import AmazonMain
 
 
@@ -10,9 +10,11 @@ def test():
         token = re.search(RE_TOKEN, html, re.M).group(1)
         types = re.search(RE_TYPE, html, re.M).group(1)
         name = re.search(RE_NAME, html, re.M).group(1)
+        rank = re.search(RE_RANK, html, re.M).group(1)
         print(token)
         print(types)
         print(name)
+        print(rank)
 
 
 def test2():
@@ -25,4 +27,4 @@ def test2():
 
 
 if __name__ == '__main__':
-    test2()
+    test()
