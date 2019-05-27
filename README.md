@@ -46,7 +46,9 @@ http://127.0.0.1:5000/api/not_bad_review
 ## not_bad_review 参数
 
 `review_id` 用来标识的唯一 id , 随便填写
+
 `country`   国家简码
+
 `asin`      amazon产品 id
 
 ## 展示
