@@ -2,6 +2,7 @@ import re
 
 from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK
 from main import AmazonMain
+from utils.dispose import AmazonBadDispose
 
 
 def test():
@@ -26,5 +27,14 @@ def test2():
     pass
 
 
+def test3():
+    with open('amazon.txt', 'r', encoding='utf-8') as f:
+        html = f.read()
+        disponse = AmazonBadDispose(1, 'US', html)
+        disponse.set_nice_review_num(0)
+        print(disponse.dispose())
+        print(disponse.get_nice_review_num())
+
+
 if __name__ == '__main__':
-    test()
+    test3()

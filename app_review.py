@@ -1,17 +1,18 @@
-import time
-import json
-import random
 import threading
 from queue import Queue
 from flask import Flask, request
+from requests.exceptions import ConnectTimeout
+from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
-from main import AmazonMain
-from setting import REQUEST_STATUS
+from utils.utils import wait, result
+from main import AmazonMain, AmazonReviewsMain
+
 
 app = Flask(__name__)
 
 
-@app.route('/api', methods=['post'])
+# 获取个人主页对应asin评论
+@app.route('/api/user_review', methods=['post'])
 def app_review():
     try:
         review = eval(request.form['review'])
@@ -22,9 +23,7 @@ def app_review():
             t.setDaemon(True)
             t.start()
             thread_list.append(t)
-            random_time = random.randint(5, 10)
-            print('等待时间 %s' % random_time)
-            time.sleep(random_time)
+            wait()
         else:
             review_list = list()
             for thread in thread_list:
@@ -37,16 +36,31 @@ def app_review():
         return result(-1)
     except SyntaxError and NameError:
         return result(-2)
+    except [ConnectTimeout, ConnectTimeoutError, MaxRetryError]:
+        return result(-4)
 
 
-def result(code, data=None):
-    res = {'code': code, 'result': 'err'}
-    if data:
-        res['result'] = data
-    for item in REQUEST_STATUS:
-        if item['code'] == code:
-            res['msg'] = item['msg']
-    return json.dumps(res)
+# 首页无差评达成条件
+@app.route('/api/not_bad_review', methods=['post'])
+def app_not_bad_review():
+    try:
+        data = {
+            'review_id': request.form['review_id'],
+            'country': request.form['country'],
+            'asin': request.form['asin']
+        }
+        q = Queue()
+        t = threading.Thread(target=start_all_review_download, args=(data, q))
+        t.setDaemon(True)
+        t.start()
+        res = q.get()
+        if type(res) == int:
+            return result(res)
+        return result(200, res)
+    except KeyError:
+        return result(-1)
+    except [ConnectTimeout, ConnectTimeoutError, MaxRetryError]:
+        return result(-4)
 
 
 def start_download(item, q):
@@ -55,6 +69,12 @@ def start_download(item, q):
     if not review_data:
         review_data = {'review_order_id': item['review_order_id']}
     q.put(review_data)
+
+
+def start_all_review_download(data, q):
+    all_review_main = AmazonReviewsMain(data)
+    all_review_data = all_review_main.start()
+    q.put(all_review_data)
 
 
 if __name__ == '__main__':

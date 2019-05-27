@@ -15,9 +15,18 @@ pipenv shell
 python app_review.py
 ```
 
-3.执行post请求 http://127.0.0.1:5000/api
+3.执行post请求
 
-## 参数
+### 查找个人主页指定asin的评论
+
+http://127.0.0.1:5000/api/review
+
+### 达成产品首页无差评条件
+
+http://127.0.0.1:5000/api/not_bad_review
+
+
+## review 参数
 
 `review` string类型的JSON数组
 > [{'review_order_id': '', 'amazon_buyer_url': '', 'country': '', 'asin': ''}]
@@ -34,6 +43,14 @@ python app_review.py
 
 > asin amazon产品 id
 
+## not_bad_review 参数
+
+`review_id` 用来标识的唯一 id , 随便填写
+`country`   国家简码
+`asin`      amazon产品 id
+
 ## 展示
 
 ![review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/review.png)
+
+![not_bad_review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/bad_review.png)
