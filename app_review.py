@@ -57,9 +57,11 @@ def app_not_bad_review():
         if type(res) == int:
             return result(res)
         return result(200, res)
-    except KeyError:
+    except KeyError as e:
+        print(e)
         return result(-1)
-    except [ConnectTimeout, ConnectTimeoutError, MaxRetryError]:
+    except (ConnectTimeout, ConnectTimeoutError, MaxRetryError) as e:
+        print(e)
         return result(-4)
 
 
