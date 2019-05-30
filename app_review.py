@@ -45,7 +45,6 @@ def app_review():
 def app_not_bad_review():
     try:
         data = {
-            'review_id': request.form['review_id'],
             'country': request.form['country'],
             'asin': request.form['asin']
         }

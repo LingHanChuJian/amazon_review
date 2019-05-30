@@ -96,7 +96,7 @@ class AmazonReviewsMain:
         self.data = data
         self.is_lang = False
         self.nice_review_num = 0
-        self.session = AmazonReviewRequests(data['review_id'], data['country'], data['asin'])
+        self.session = AmazonReviewRequests(data['country'], data['asin'])
 
     def get_amazon_html(self):
         response = self.session.get_amazon_data(self.is_lang)
@@ -108,7 +108,7 @@ class AmazonReviewsMain:
             if response == 404:
                 print('asin 不存在')
                 return None
-        dispose = AmazonBadDispose(self.data['review_id'], self.data['country'], response)
+        dispose = AmazonBadDispose(self.data['country'], response)
         dispose.set_nice_review_num(self.nice_review_num)
         if is_robot(dispose.get_selector()):
             print('机器人验证')

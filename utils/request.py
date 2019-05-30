@@ -33,10 +33,9 @@ class AmazonRequests:
 
 class AmazonReviewRequests:
 
-    def __init__(self, review_id, country, asin):
+    def __init__(self, country, asin):
         self.page = 1
         self.asin = asin
-        self.id = review_id
         self.country = country
         self.ua = UserAgent().random
         self.session = requests.session()
