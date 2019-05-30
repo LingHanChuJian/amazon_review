@@ -19,7 +19,7 @@ python app_review.py
 
 ### 查找个人主页指定asin的评论
 
-http://127.0.0.1:5000/api/review
+http://127.0.0.1:5000/api/user_review
 
 ### 达成产品首页无差评条件
 
