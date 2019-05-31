@@ -122,12 +122,12 @@ class AmazonReviewsMain:
         self.nice_review_num = dispose.get_nice_review_num()
         print(dict_data)
         print(self.nice_review_num)
-        if self.nice_review_num >= NICE_REVIEW_NUM:
-            return self.all_data
         if dict_data:
             self.all_data.extend(dict_data)
         else:
             print('没有数据写入')
+        if self.nice_review_num >= NICE_REVIEW_NUM:
+            return self.all_data
         if dispose.is_next_page():
             print('请求下一页')
             self.session.next_page()
