@@ -59,8 +59,9 @@ class AmazonBadDispose:
                 review_stars = review_stars.group(1)
             else:
                 review_stars = 0
-            review_helpful = review.xpath('div/div/div[5]/div/span[@data-hook="review-voting-widget"]'
-                                          '/div/span[@data-hook="helpful-vote-statement"]//text()')
+            review_helpful = review.xpath('div/div/div[contains(@class, "review-comments")]/div'
+                                          '/span[@data-hook="review-voting-widget"]/div[1]'
+                                          '/span[@data-hook="helpful-vote-statement"]//text()')
             review_helpful = re.search(RE_HELPFUL, self.get_data(review_helpful))
             if review_helpful:
                 review_helpful = int(review_helpful.group(1))
