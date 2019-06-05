@@ -127,7 +127,10 @@ class AmazonReviewsMain:
         else:
             print('没有数据写入')
         if self.nice_review_num >= NICE_REVIEW_NUM:
-            return self.all_data
+            if self.all_data:
+                return self.all_data
+            else:
+                return -3
         if dispose.is_next_page():
             print('请求下一页')
             self.session.next_page()
