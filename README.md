@@ -49,6 +49,8 @@ http://127.0.0.1:5000/api/not_bad_review
 
 `asin`      amazon产品 id
 
+`count`     获取次数
+
 ## 展示
 
 ![review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/review.png)
