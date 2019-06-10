@@ -95,11 +95,12 @@ class AmazonReviewsMain:
         self.all_data = []
         self.data = data
         self.is_lang = False
+        self.is_bad = True
         self.nice_review_num = 0
-        self.session = AmazonReviewRequests(data['country'], data['asin'])
+        self.session = AmazonReviewRequests(data['country'], data['asin'], data['count'])
 
     def get_amazon_html(self):
-        response = self.session.get_amazon_data(self.is_lang)
+        response = self.session.get_amazon_data(self.is_lang, self.get_bad())
         return request_message(response, 'txt')
 
     def start(self):
@@ -108,8 +109,7 @@ class AmazonReviewsMain:
             if response == 404:
                 print('asin 不存在')
                 return None
-        dispose = AmazonBadDispose(self.data['country'], response)
-        dispose.set_nice_review_num(self.nice_review_num)
+        dispose = AmazonBadDispose(self.data['country'], response, self.data['count'])
         if is_robot(dispose.get_selector()):
             print('机器人验证')
             return self.start()
@@ -118,15 +118,21 @@ class AmazonReviewsMain:
             print('语言不符合, 重新请求')
             wait()
             return self.start()
+        dispose.set_nice_review_num(self.nice_review_num)
         dict_data = dispose.dispose()
         self.nice_review_num = dispose.get_nice_review_num()
-        print(dict_data)
-        print(self.nice_review_num)
+        # print(dict_data)
+        # print(self.nice_review_num)
         if dict_data:
             self.all_data.extend(dict_data)
         else:
             print('没有数据写入')
-        if self.nice_review_num >= NICE_REVIEW_NUM:
+        if self.data['count'] == 1 and self.nice_review_num >= NICE_REVIEW_NUM:
+            if self.all_data:
+                return self.all_data
+            else:
+                return -3
+        if self.data['count'] != 1:
             if self.all_data:
                 return self.all_data
             else:
@@ -140,6 +146,8 @@ class AmazonReviewsMain:
             print('评论获取完毕')
             return -3
 
+    def set_bad(self, is_bad=True):
+        self.is_bad = is_bad
 
-
-
+    def get_bad(self):
+        return self.is_bad

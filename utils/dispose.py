@@ -36,8 +36,9 @@ class AmazonDispose:
 
 
 class AmazonBadDispose:
-    def __init__(self, country, data):
+    def __init__(self, country, data, count):
         self.data = data
+        self.count = count
         self.country = country
         self.nice_review_num = 0
         self.selector = etree.HTML(data)
@@ -67,11 +68,29 @@ class AmazonBadDispose:
                 review_helpful = int(review_helpful.group(1))
             else:
                 review_helpful = 0
-            if int(review_stars) > BAD_STARS:
-                self.nice_review_num += 1
-            else:
-                review_row['href'] = self.get_review_details_url(review_href)
-                review_row['helpful'] = review_helpful
+            if self.count == 1:
+                if int(review_stars) > BAD_STARS:
+                    self.nice_review_num += 1
+                else:
+                    review_row['type'] = 2
+                    review_row['href'] = self.get_review_details_url(review_href)
+                    review_row['helpful'] = review_helpful
+            elif self.count == 2 or self.count == 4:
+                if int(review_stars) < BAD_STARS:
+                    review_row['type'] = 2
+                    review_row['href'] = self.get_review_details_url(review_href)
+                    review_row['helpful'] = review_helpful
+            elif self.count == 3:
+                if int(review_stars) > BAD_STARS:
+                    self.nice_review_num += 1
+                    review_row['type'] = 1
+                    review_row['href'] = self.get_review_details_url(review_href)
+                    review_row['helpful'] = review_helpful
+                else:
+                    review_row['type'] = 2
+                    review_row['href'] = self.get_review_details_url(review_href)
+                    review_row['helpful'] = review_helpful
+            if review_row:
                 bad_review.append(review_row)
         return bad_review
 

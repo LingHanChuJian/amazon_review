@@ -36,7 +36,8 @@ all_review_param = {
     'ie': 'UTF8',
     'reviewerType': 'all_reviews',
     'sortBy': 'helpful',
-    'pageNumber': ''
+    'pageNumber': '',
+    'filterByStar': ''
 }
 
 all_reviews_header = {

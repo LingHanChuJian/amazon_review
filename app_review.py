@@ -1,8 +1,10 @@
 import threading
 from queue import Queue
 from flask import Flask, request
-from requests.exceptions import ConnectTimeout
-from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
+
+from socket import timeout
+from requests.exceptions import ConnectTimeout, ReadTimeout
+from urllib3.exceptions import ConnectTimeoutError, MaxRetryError, ReadTimeoutError
 
 from utils.utils import wait, result
 from main import AmazonMain, AmazonReviewsMain
@@ -36,7 +38,7 @@ def app_review():
         return result(-1)
     except SyntaxError and NameError:
         return result(-2)
-    except [ConnectTimeout, ConnectTimeoutError, MaxRetryError]:
+    except (ConnectTimeout, ConnectTimeoutError, MaxRetryError):
         return result(-4)
 
 
@@ -46,7 +48,8 @@ def app_not_bad_review():
     try:
         data = {
             'country': request.form['country'],
-            'asin': request.form['asin']
+            'asin': request.form['asin'],
+            'count': int(request.form['count'])
         }
         q = Queue()
         t = threading.Thread(target=start_all_review_download, args=(data, q))
@@ -59,9 +62,6 @@ def app_not_bad_review():
     except KeyError as e:
         print(e)
         return result(-1)
-    except (ConnectTimeout, ConnectTimeoutError, MaxRetryError) as e:
-        print(e)
-        return result(-4)
 
 
 def start_download(item, q):
@@ -73,9 +73,20 @@ def start_download(item, q):
 
 
 def start_all_review_download(data, q):
-    all_review_main = AmazonReviewsMain(data)
-    all_review_data = all_review_main.start()
-    q.put(all_review_data)
+    try:
+        all_review_main = AmazonReviewsMain(data)
+        all_review_data = all_review_main.start()
+        print('差评')
+        print(all_review_data)
+        if all_review_data and data['count'] == 3:
+            all_review_main.set_bad(False)
+            all_review_data = all_review_main.start()
+            print('好评')
+            print(all_review_data)
+        q.put(all_review_data)
+    except Exception as e:
+        print(e)
+        q.put(-4)
 
 
 if __name__ == '__main__':

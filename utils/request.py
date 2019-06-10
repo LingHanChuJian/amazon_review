@@ -33,25 +33,32 @@ class AmazonRequests:
 
 class AmazonReviewRequests:
 
-    def __init__(self, country, asin):
+    def __init__(self, country, asin, count):
         self.page = 1
         self.asin = asin
         self.country = country
+        self.count = count
         self.ua = UserAgent().random
         self.session = requests.session()
 
     def get_reviews_url(self):
         return ALL_REVIEWS_URL.format(domain=get_amazon_domain(self.country), asin=self.asin)
 
-    def get_amazon_data(self, is_lang=False):
-        all_review_param['pageNumber'] = self.get_page()
-        if is_lang and self.country.upper() == 'US':
-            all_review_param['filterByLanguage'] = 'en_US'
+    def get_amazon_data(self, is_lang=False, is_bad=True):
         all_reviews_header['user-agent'] = self.ua
-        response = \
-            self.session.get(url=self.get_reviews_url(), headers=all_reviews_header, params=all_review_param, timeout=20)
+        response = self.session.get(url=self.get_reviews_url(), headers=all_reviews_header,
+                                    params=self.get_all_review_param(is_lang, is_bad), timeout=20)
         response.encoding = 'utf-8'
         return response
+
+    def get_all_review_param(self, is_lang=False, is_bad=True):
+        param = all_review_param.copy()
+        param['pageNumber'] = self.get_page()
+        if is_lang and self.country.upper() == 'US':
+            param['filterByLanguage'] = 'en_US'
+        if self.count == 3 and not is_bad:
+            param['filterByStar'] = 'five_star'
+        return param
 
     def next_page(self):
         self.page += 1
