@@ -2,12 +2,11 @@ import threading
 from queue import Queue
 from flask import Flask, request
 
-from socket import timeout
-from requests.exceptions import ConnectTimeout, ReadTimeout
-from urllib3.exceptions import ConnectTimeoutError, MaxRetryError, ReadTimeoutError
+from requests.exceptions import ConnectTimeout
+from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
 from utils.utils import wait, result
-from main import AmazonMain, AmazonReviewsMain
+from main import AmazonMain, AmazonReviewsMain, AmazonFollowMain
 
 
 app = Flask(__name__)
@@ -64,6 +63,26 @@ def app_not_bad_review():
         return result(-1)
 
 
+@app.route('/api/asin_follow_offer', methods=['post'])
+def app_asin_follow_offer():
+    try:
+        data = {
+            'country': request.form['country'],
+            'asin': request.form['asin']
+        }
+        q = Queue()
+        t = threading.Thread(target=start_follow_offer_download, args=(data, q))
+        t.setDaemon(True)
+        t.start()
+        res = q.get()
+        if type(res) == int:
+            return result(res)
+        return result(200, res)
+    except KeyError as e:
+        print(e)
+        return result(-1)
+
+
 def start_download(item, q):
     review_main = AmazonMain(item)
     review_data = review_main.start()
@@ -87,6 +106,17 @@ def start_all_review_download(data, q):
     except Exception as e:
         print(e)
         q.put(-4)
+
+
+def start_follow_offer_download(data, q):
+    # try:
+    follow_offer_main = AmazonFollowMain(data)
+    follow_offer_data = follow_offer_main.start()
+    print(follow_offer_data)
+    q.put(follow_offer_data)
+    # except Exception as e:
+    #     print(e)
+    #     q.put(-4)
 
 
 if __name__ == '__main__':

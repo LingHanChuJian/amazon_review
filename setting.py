@@ -21,6 +21,15 @@ REQUEST_STATUS = ({
     'code': -4,
     'msg': '连接超时'
 }, {
+    'code': -5,
+    'msg': '请求数据失败'
+}, {
+    'code': -6,
+    'msg': '机器人验证'
+}, {
+    'code': -7,
+    'msg': '地址更换失败'
+}, {
     'code': 200,
     'msg': '请求成功'
 })
@@ -40,8 +49,28 @@ AMAZON_DOMAIN = {
     'IN': 'https://www.amazon.in',
     'AU': 'https://www.amazon.com.au',
     'GB': 'https://www.amazon.co.uk',
-    'MX': 'https://www.amazon.com.mx'
+    'MX': 'https://www.amazon.com.mx',
+    'BR': 'https://www.amazon.com.br'
     # 'SG': 'https://www.amazon.com.sg'
+}
+
+AMAZON_ZIPCODE = {
+    'AE': 'Fujairah',
+    'CN': '615299',
+    'JP': '922-0337',
+    'US': '60616',
+    'UK': 'EC1A 1HQ',
+    'FR': '97460',
+    'DE': '01731',
+    'ES': '28039',
+    'IT': '00144',
+    'CA': 'T0H 4E0',
+    'IN': '110034',
+    'AU': '2060',
+    'GB': 'EC1A 1HQ',
+    'MX': '02860',
+    'BR': '40301-110'
+    # 'SG': ''
 }
 
 # 获取token

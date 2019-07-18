@@ -65,3 +65,27 @@ class AmazonReviewRequests:
 
     def get_page(self):
         return self.page
+
+
+class AmazonFollowRequests:
+    def __init__(self, country, asin):
+        self.asin = asin
+        self.country = country
+        self.ua = UserAgent().random
+        self.session = requests.session()
+
+    def get_amazon_data(self, url):
+        asin_follow_offer_header['user-agent'] = self.ua
+        response = self.session.get(url=url, headers=asin_follow_offer_header, timeout=20)
+        response.encoding = 'utf-8'
+        return response
+
+    def post_amazon_data(self, data):
+        address_header['user-agent'] = self.ua
+        response = self.session.post(url=AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)),
+                                     data=data, headers=address_header, timeout=20)
+        response.encoding = 'utf-8'
+        return response
+
+    def get_follow_url(self):
+        return ASIN_FOLLOW_OFFER.format(domain=get_amazon_domain(self.country), asin=self.asin)

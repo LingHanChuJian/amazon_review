@@ -26,6 +26,9 @@ http://127.0.0.1:5000/api/user_review
 http://127.0.0.1:5000/api/not_bad_review
 
 
+### 爬取跟卖店铺信息
+http://127.0.0.1:5000/api/asin_follow_offer
+
 ## review 参数
 
 `review` string类型的JSON数组
@@ -51,8 +54,16 @@ http://127.0.0.1:5000/api/not_bad_review
 
 `count`     获取次数
 
+## asin_follow_offer 参数
+
+`country`   国家简码
+
+`asin`      amazon产品 id
+
 ## 展示
 
 ![review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/review.png)
 
 ![not_bad_review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/bad_review.png)
+
+![asin_follow_offer](https://github.com/LingHanChuJian/amazon_review/blob/master/img/follow_offer.png)

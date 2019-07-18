@@ -48,3 +48,40 @@ all_reviews_header = {
     'accept-language': 'zh-CN,zh;q=0.9',
     'upgrade-insecure-requests': '1'
 }
+
+# asin 跟卖信息
+AMAZON_ADDRESS = '{domain}/gp/delivery/ajax/address-change.html'
+
+address_data = {
+    'locationType': 'LOCATION_INPUT',
+    'zipCode': '',
+    'storeContext': 'generic',
+    'deviceType': 'web',
+    'pageType': 'Gateway',
+    'actionSource': 'glow'
+}
+
+address_header = {
+    'accept': 'text/html,*/*',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'x-requested-with': 'XMLHttpRequest',
+    'user-agent': ''
+}
+
+ASIN_FOLLOW_OFFER = '{domain}/gp/offer-listing/{asin}'
+
+ASIN_FOLLOW_OFFER_NEXT = '{domain}{next_url}'
+
+asin_follow_offer_header = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,'
+              '*/*;q=0.8,application/signed-exchange;v=b3',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'upgrade-insecure-requests': '1',
+    'user-agent': ''
+}

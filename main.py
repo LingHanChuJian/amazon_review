@@ -1,10 +1,10 @@
 from fake_useragent import UserAgent
 
-from setting import MAX_PAGE, NICE_REVIEW_NUM
+from setting import MAX_PAGE, NICE_REVIEW_NUM, AMAZON_ZIPCODE
 from utils.api import *
 from utils.utils import *
-from utils.dispose import AmazonDispose, AmazonBadDispose
-from utils.request import AmazonRequests, AmazonReviewRequests
+from utils.dispose import AmazonDispose, AmazonBadDispose, AmazonFollowDispose
+from utils.request import AmazonRequests, AmazonReviewRequests, AmazonFollowRequests
 
 
 class AmazonMain:
@@ -151,3 +151,62 @@ class AmazonReviewsMain:
 
     def get_bad(self):
         return self.is_bad
+
+
+class AmazonFollowMain:
+    def __init__(self, data):
+        self.all_data = []
+        self.data = data
+        self.session = AmazonFollowRequests(self.data['country'], self.data['asin'])
+        self.url = self.session.get_follow_url()
+
+    def change_address(self):
+        amazon_response = self.session.get_amazon_data(get_amazon_domain(self.data['country']))
+        amazon_response = request_message(amazon_response, 'txt')
+        if not amazon_response:
+            return -5
+        amazon_dispose = AmazonFollowDispose(amazon_response)
+        if is_robot(amazon_dispose.get_selector()):
+            return -6
+        cur_data = address_data.copy()
+        zip_code = AMAZON_ZIPCODE[self.data['country']]
+        cur_data['zipCode'] = zip_code
+        if self.data['country'] == 'AE':
+            del cur_data['zipCode']
+            cur_data['locationType'] = 'CITY'
+            cur_data['city'] = zip_code
+            cur_data['cityName'] = zip_code
+        address_response = self.session.post_amazon_data(cur_data)
+        address_response = request_message(address_response, 'json')
+        print(address_response)
+        is_country = self.data['country'] == 'AU'
+        is_address = 'address' in address_response and 'zipCode' in address_response['address']
+        if not is_country and not is_address:
+            return -7
+        print('国家为AU, 需要登陆才能更换地址') if is_country else print('更换对应国家地址')
+        return ''
+
+    def start(self):
+        if self.url == self.session.get_follow_url():
+            results = self.change_address()
+            if type(results) == int:
+                return results
+        follow_response = self.session.get_amazon_data(self.url)
+        follow_response = request_message(follow_response, 'txt')
+        if not follow_response:
+            return -5
+        follow_dispose = AmazonFollowDispose(follow_response)
+        if is_robot(follow_dispose.get_selector()):
+            return -6
+        data = follow_dispose.dispose()
+        print(data)
+        self.all_data.extend(data)
+        if follow_dispose.get_next_page():
+            self.url = ASIN_FOLLOW_OFFER_NEXT.format(domain=get_amazon_domain(self.data['country']),
+                                                     next_url=follow_dispose.get_next_page())
+            wait()
+            return self.start()
+        return self.all_data
+
+    def get_url(self):
+        return self.url

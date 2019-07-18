@@ -25,9 +25,7 @@ def is_number(s):
 
 def is_robot(selector):
     robot = selector.xpath('//form[@action="/errors/validateCaptcha"]')
-    if robot:
-        return True
-    return False
+    return True if robot else False
 
 
 def request_message(response, mode):
