@@ -206,7 +206,7 @@ class AmazonFollowMain:
                                                      next_url=follow_dispose.get_next_page())
             wait()
             return self.start()
-        return self.all_data
+        return self.all_data if self.all_data else -3
 
     def get_url(self):
         return self.url
