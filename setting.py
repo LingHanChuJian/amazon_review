@@ -91,6 +91,15 @@ RE_STARS = r'(\d+)'
 # 获取点赞数
 RE_HELPFUL = r'(\d+)'
 
+# 获取链接里面的ASIN
+RE_URL_ASIN = r'\/dp\/(.*)\/'
+
+# 获取价格
+RE_PRICE = r'([0-9,.]+)'
+
+# 替换指定字符串
+RE_IMAGE_URL = r'_(.*)_'
+
 # 语言
 LANG_CODE = {
     'CN': 'zh_CN',

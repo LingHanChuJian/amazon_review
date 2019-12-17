@@ -25,11 +25,13 @@ http://127.0.0.1:5000/api/user_review
 
 http://127.0.0.1:5000/api/not_bad_review
 
-
 ### 爬取跟卖店铺信息
 http://127.0.0.1:5000/api/asin_follow_offer
 
-## review 参数
+### 抓取产品详情信息
+http://127.0.0.1:5000/api/product_details
+
+## user_review 参数
 
 `review` string类型的JSON数组
 > [{'review_order_id': '', 'amazon_buyer_url': '', 'country': '', 'asin': ''}]
@@ -60,6 +62,9 @@ http://127.0.0.1:5000/api/asin_follow_offer
 
 `asin`      amazon产品 id
 
+## product_details 参数
+`url`       amazon产品链接
+
 ## 展示
 
 ![review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/review.png)
@@ -67,3 +72,5 @@ http://127.0.0.1:5000/api/asin_follow_offer
 ![not_bad_review](https://github.com/LingHanChuJian/amazon_review/blob/master/img/bad_review.png)
 
 ![asin_follow_offer](https://github.com/LingHanChuJian/amazon_review/blob/master/img/follow_offer.png)
+
+![product_details](https://github.com/LingHanChuJian/amazon_review/blob/master/img/product_details.png)

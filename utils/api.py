@@ -75,7 +75,7 @@ ASIN_FOLLOW_OFFER = '{domain}/gp/offer-listing/{asin}'
 
 ASIN_FOLLOW_OFFER_NEXT = '{domain}{next_url}'
 
-asin_follow_offer_header = {
+product_details_header = asin_follow_offer_header = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,'
               '*/*;q=0.8,application/signed-exchange;v=b3',
     'accept-encoding': 'gzip, deflate, br',

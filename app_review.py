@@ -6,7 +6,7 @@ from requests.exceptions import ConnectTimeout
 from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
 from utils.utils import wait, result
-from main import AmazonMain, AmazonReviewsMain, AmazonFollowMain
+from main import AmazonMain, AmazonReviewsMain, AmazonFollowMain, AmazonProductDetailsMain
 
 
 app = Flask(__name__)
@@ -83,6 +83,23 @@ def app_asin_follow_offer():
         return result(-1)
 
 
+@app.route('/api/product_details', methods=['post'])
+def app_product_details():
+    try:
+        url = request.form['url']
+        q = Queue()
+        t = threading.Thread(target=start_product_details_download, args=(url, q))
+        t.setDaemon(True)
+        t.start()
+        res = q.get()
+        if type(res) == int:
+            return result(res)
+        return result(200, res)
+    except KeyError as e:
+        print(e)
+        return result(-1)
+
+
 def start_download(item, q):
     review_main = AmazonMain(item)
     review_data = review_main.start()
@@ -117,6 +134,12 @@ def start_follow_offer_download(data, q):
     # except Exception as e:
     #     print(e)
     #     q.put(-4)
+
+
+def start_product_details_download(data, q):
+    product_details_main = AmazonProductDetailsMain(data)
+    product_details_data = product_details_main.start()
+    q.put(product_details_data)
 
 
 if __name__ == '__main__':
