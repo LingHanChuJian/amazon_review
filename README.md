@@ -17,6 +17,9 @@ python app_review.py
 
 3.执行post请求
 
+### 获取评论数据
+http://127.0.0.1:5000/api/review
+
 ### 查找个人主页指定asin的评论
 
 http://127.0.0.1:5000/api/user_review
@@ -30,6 +33,9 @@ http://127.0.0.1:5000/api/asin_follow_offer
 
 ### 抓取产品详情信息
 http://127.0.0.1:5000/api/product_details
+
+## review 参数
+`url`       amazon评论链接
 
 ## user_review 参数
 
