@@ -5,8 +5,8 @@ from urllib.parse import urlparse
 from setting import MAX_PAGE, NICE_REVIEW_NUM, AMAZON_ZIPCODE, RE_URL_ASIN
 from utils.api import *
 from utils.utils import *
-from utils.dispose import AmazonDispose, AmazonBadDispose, AmazonFollowDispose, AmazonProductDetailsDispose, BaseDispose
-from utils.request import AmazonRequests, AmazonReviewRequests, AmazonFollowRequests, AmazonProductDetailsRequests
+from utils.dispose import *
+from utils.request import *
 
 
 class AmazonMain:
@@ -99,7 +99,7 @@ class AmazonReviewsMain:
         self.is_lang = False
         self.is_bad = True
         self.nice_review_num = 0
-        self.session = AmazonReviewRequests(data['country'], data['asin'], data['count'])
+        self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'])
 
     def get_amazon_html(self):
         response = self.session.get_amazon_data(self.is_lang, self.get_bad())
@@ -254,3 +254,31 @@ class AmazonProductDetailsMain(BaseMain):
         data['country'] = self.get_country()
         data['asin'] = self.get_asin()
         return data
+
+
+class AmazonReviewMain(BaseMain):
+    def __init__(self, url):
+        self.url = url
+        self.session = AmazonReviewRequests(self.get_country())
+        super(AmazonReviewMain, self).__init__(self.get_country(), self.session)
+
+    def get_country(self):
+        cur_domain = urlparse(self.url).netloc
+        for domain_item in AMAZON_DOMAIN:
+            domain = urlparse(AMAZON_DOMAIN[domain_item]).netloc
+            if cur_domain == domain:
+                return domain_item
+        return ''
+
+    def start(self):
+        results = self.change_address()
+        if type(results) == int:
+            return results
+        review_response = self.session.get_amazon_data(self.url)
+        review_response = request_message(review_response, 'txt')
+        if not review_response:
+            return -5
+        review_dispose = AmazonReviewDispose(self.get_country(), review_response)
+        if is_robot(review_dispose.get_selector()):
+            return -6
+        return review_dispose.dispose()

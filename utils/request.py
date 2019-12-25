@@ -31,7 +31,7 @@ class AmazonRequests:
         return reviews_param
 
 
-class AmazonReviewRequests:
+class AmazonUserReviewRequests:
 
     def __init__(self, country, asin, count):
         self.page = 1
@@ -108,5 +108,13 @@ class AmazonProductDetailsRequests(DirectBase):
 
     def get_amazon_data(self, url):
         cur_header = product_details_header.copy()
+        cur_header['user-agent'] = self.ua
+        return self.get_requests_data(url, cur_header)
+
+
+class AmazonReviewRequests(DirectBase):
+
+    def get_amazon_data(self, url):
+        cur_header = review_header.copy()
         cur_header['user-agent'] = self.ua
         return self.get_requests_data(url, cur_header)

@@ -1,5 +1,6 @@
 import re
 import os
+import time
 from lxml import etree
 from setting import *
 from urllib import parse
@@ -216,3 +217,45 @@ class AmazonProductDetailsDispose(BaseDispose):
     @staticmethod
     def get_image_url(data):
         return re.compile(RE_IMAGE_URL).sub('_US150_', os.path.basename(get_data(data)))
+
+
+class AmazonReviewDispose(BaseDispose):
+    def __init__(self, country, data):
+        self.country = country
+        super(AmazonReviewDispose, self).__init__(data)
+
+    def dispose(self):
+        data = {}
+        buyer_name = self.selector.xpath('//span[@class="a-profile-name"]/text()')
+        review_date = self.selector.xpath('//span[@data-hook="review-date"]/text()')
+        review_title = self.selector.xpath('//h1[@id="cr-customer-review"]/text()')
+        review_text = self.selector.xpath('//span[@data-hook="review-body"]//text()')
+        review_star = self.selector.xpath('//i[@data-hook="review-star-rating"]/@class')
+        data['buyer_name'] = get_data(buyer_name)
+        data['review_date'] = self.get_date(review_date)
+        data['review_title'] = get_data(review_title)
+        data['review_text'] = get_data(review_text)
+        data['review_star'] = self.get_star(review_star)
+        return data
+
+    @staticmethod
+    def get_star(star):
+        review_stars = re.search(RE_STARS, get_data(star))
+        return float(review_stars.group(1)) if review_stars else 0
+
+    def get_date(self, data):
+        date = get_data(data)
+        try:
+            date = date.replace(' ', '')
+            time_format = TIME_CODE[self.country]
+            if type(time_format) == dict:
+                if 'replace' in time_format:
+                    date = date.replace(time_format['replace'], '')
+                for item in time_format['MapMonth']:
+                    date = date.replace(item, time_format['MapMonth'][item])
+                time_format = time_format['format']
+            time_struct = time.strptime(date, time_format)
+            return time.strftime(STANDARD_TIME, time_struct) if STANDARD_TIME else int(time.mktime(time_struct))
+        except (TypeError, ValueError, SyntaxError) as e:
+            print(e)
+            return date

@@ -6,21 +6,39 @@ from requests.exceptions import ConnectTimeout
 from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
 from utils.utils import wait, result
-from main import AmazonMain, AmazonReviewsMain, AmazonFollowMain, AmazonProductDetailsMain
+from main import *
 
 
 app = Flask(__name__)
 
 
+# 获取评论链接的评论数据
+@app.route('/api/review', methods=['post'])
+def app_review():
+    try:
+        url = request.form['url']
+        q = Queue()
+        t = threading.Thread(target=start_review_download, args=(url, q))
+        t.setDaemon(True)
+        t.start()
+        res = q.get()
+        if type(res) == int:
+            return result(res)
+        return result(200, res)
+    except KeyError as e:
+        print(e)
+        return result(-1)
+
+
 # 获取个人主页对应asin评论
 @app.route('/api/user_review', methods=['post'])
-def app_review():
+def app_user_review():
     try:
         review = eval(request.form['review'])
         thread_list = list()
         q = Queue()
         for item in review:
-            t = threading.Thread(target=start_download, args=(item, q))
+            t = threading.Thread(target=start_user_review_download, args=(item, q))
             t.setDaemon(True)
             t.start()
             thread_list.append(t)
@@ -100,7 +118,7 @@ def app_product_details():
         return result(-1)
 
 
-def start_download(item, q):
+def start_user_review_download(item, q):
     review_main = AmazonMain(item)
     review_data = review_main.start()
     if not review_data:
@@ -140,6 +158,12 @@ def start_product_details_download(data, q):
     product_details_main = AmazonProductDetailsMain(data)
     product_details_data = product_details_main.start()
     q.put(product_details_data)
+
+
+def start_review_download(data, q):
+    review_main = AmazonReviewMain(data)
+    review_data = review_main.start()
+    q.put(review_data)
 
 
 if __name__ == '__main__':

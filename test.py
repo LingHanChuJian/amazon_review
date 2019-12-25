@@ -3,7 +3,7 @@ import os
 
 from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL
 from main import AmazonMain
-from utils.dispose import AmazonFollowDispose, AmazonProductDetailsDispose
+from utils.dispose import AmazonFollowDispose, AmazonReviewDispose
 from urllib.parse import urlparse
 
 
@@ -32,7 +32,7 @@ def test2():
 def test3():
     with open('amazon.txt', 'r', encoding='utf-8') as f:
         html = f.read()
-        dispose = AmazonProductDetailsDispose(html)
+        dispose = AmazonReviewDispose('US', html)
         print(dispose.dispose())
 
 
