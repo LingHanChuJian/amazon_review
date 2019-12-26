@@ -281,4 +281,6 @@ class AmazonReviewMain(BaseMain):
         review_dispose = AmazonReviewDispose(self.get_country(), review_response)
         if is_robot(review_dispose.get_selector()):
             return -6
-        return review_dispose.dispose()
+        data = review_dispose.dispose()
+        data['review_url'] = self.url
+        return data
