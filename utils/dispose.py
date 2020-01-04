@@ -168,6 +168,9 @@ class AmazonFollowDispose(BaseDispose):
 
 
 class AmazonProductDetailsDispose(BaseDispose):
+    def __init__(self, country, data):
+        self.country = country
+        super(AmazonProductDetailsDispose, self).__init__(data)
 
     def dispose(self):
         data = {}
@@ -205,10 +208,13 @@ class AmazonProductDetailsDispose(BaseDispose):
         data['listing_props'] = listing_props
         return data
 
-    @staticmethod
-    def get_price(data):
+    def get_price(self, data):
         result = re.search(RE_PRICE, get_data(data))
-        return float(result.group(1)) if result else 0
+        price = result.group(1) if result else '0'
+        except_list = ['FR', 'DE', 'ES', 'IT', 'BR']
+        if self.country in except_list:
+            price.replace(',', '.').replace('.', '')
+        return float(price.replace(',', ''))
 
     @staticmethod
     def get_prop_name(data):
@@ -231,12 +237,24 @@ class AmazonReviewDispose(BaseDispose):
         review_title = self.selector.xpath('//a[@data-hook="review-title"]//text()')
         review_text = self.selector.xpath('//span[@data-hook="review-body"]//text()')
         review_star = self.selector.xpath('//i[@data-hook="review-star-rating"]/@class')
+        review_images = self.selector.xpath('//img[@data-hook="review-image-tile"]/@src')
+        review_videos = self.selector.xpath('//video/@src')
         data['buyer_name'] = get_data(buyer_name)
         data['review_date'] = self.get_date(review_date)
         data['review_title'] = get_data(review_title)
         data['review_text'] = get_data(review_text)
         data['review_star'] = self.get_star(review_star)
+        data['review_images'] = self.get_images(review_images)
+        data['review_videos'] = self.get_videos(review_videos)
         return data
+
+    @staticmethod
+    def get_videos(data):
+        return [os.path.basename(item) for item in data] if data else []
+
+    @staticmethod
+    def get_images(data):
+        return [os.path.basename(item).replace('._SY88', '') for item in data] if data else []
 
     @staticmethod
     def get_star(star):

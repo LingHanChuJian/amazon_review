@@ -77,5 +77,5 @@ if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
     # sun.log2()
-    # test3()
-    print(test6())
+    test3()
+    # print(test6())

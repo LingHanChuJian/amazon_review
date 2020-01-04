@@ -181,10 +181,11 @@ class BaseMain:
             cur_data['locationType'] = 'CITY'
             cur_data['city'] = zip_code
             cur_data['cityName'] = zip_code
+        print(cur_data)
         address_response = self.session.post_address_change(cur_data, proxies)
         address_response = request_message(address_response, 'json')
         print(address_response)
-        is_address = 'address' in address_response and 'zipCode' in address_response['address']
+        is_address = address_response and 'address' in address_response and 'zipCode' in address_response['address']
         if not self.country == 'AU' and not is_address:
             return -7
         print('国家为AU, 需要登陆才能更换地址') if self.country == 'AU' else print('更换对应国家地址')
@@ -254,7 +255,7 @@ class AmazonProductDetailsMain(BaseMain):
         product_details_response = request_message(product_details_response, 'txt')
         if not product_details_response:
             return -5
-        product_details_dispose = AmazonProductDetailsDispose(product_details_response)
+        product_details_dispose = AmazonProductDetailsDispose(self.get_country(), product_details_response)
         if is_robot(product_details_dispose.get_selector()):
             return -6
         data = product_details_dispose.dispose()
