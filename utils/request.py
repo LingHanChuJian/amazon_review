@@ -17,8 +17,8 @@ class AmazonRequests:
     def get_review_url(self):
         return REVIEWS_URL.format(domain=get_amazon_domain(self.country))
 
-    def get_amazon_data(self, url, header, param=None):
-        response = self.session.get(url=url, headers=header, params=param, timeout=20)
+    def get_amazon_data(self, url, header, param=None, proxies=None):
+        response = self.session.get(url=url, headers=header, params=param, timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
 
@@ -44,10 +44,10 @@ class AmazonUserReviewRequests:
     def get_reviews_url(self):
         return ALL_REVIEWS_URL.format(domain=get_amazon_domain(self.country), asin=self.asin)
 
-    def get_amazon_data(self, is_lang=False, is_bad=True):
+    def get_amazon_data(self, is_lang=False, is_bad=True, proxies=None):
         all_reviews_header['user-agent'] = self.ua
         response = self.session.get(url=self.get_reviews_url(), headers=all_reviews_header,
-                                    params=self.get_all_review_param(is_lang, is_bad), timeout=20)
+                                    params=self.get_all_review_param(is_lang, is_bad), timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
 
@@ -73,20 +73,20 @@ class DirectBase:
         self.ua = UserAgent().random
         self.session = requests.session()
 
-    def get_requests_data(self, url, header):
-        response = self.session.get(url=url, headers=header, timeout=20)
+    def get_requests_data(self, url, header, proxies=None):
+        response = self.session.get(url=url, headers=header, timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
 
-    def post_data(self, url, header, data):
-        response = self.session.post(url=url, data=data, headers=header, timeout=20)
+    def post_data(self, url, header, data, proxies=None):
+        response = self.session.post(url=url, data=data, headers=header, timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
 
-    def post_address_change(self, data):
+    def post_address_change(self, data, proxies=None):
         cur_header = address_header.copy()
         cur_header['user-agent'] = self.ua
-        return self.post_data(AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)), cur_header, data)
+        return self.post_data(AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)), cur_header, data, proxies)
 
 
 class AmazonFollowRequests(DirectBase):
@@ -98,23 +98,23 @@ class AmazonFollowRequests(DirectBase):
     def get_follow_url(self):
         return ASIN_FOLLOW_OFFER.format(domain=get_amazon_domain(self.country), asin=self.asin)
 
-    def get_amazon_data(self, url):
+    def get_amazon_data(self, url, proxies=None):
         cur_header = asin_follow_offer_header.copy()
         cur_header['user-agent'] = self.ua
-        return self.get_requests_data(url, cur_header)
+        return self.get_requests_data(url, cur_header, proxies)
 
 
 class AmazonProductDetailsRequests(DirectBase):
 
-    def get_amazon_data(self, url):
+    def get_amazon_data(self, url, proxies=None):
         cur_header = product_details_header.copy()
         cur_header['user-agent'] = self.ua
-        return self.get_requests_data(url, cur_header)
+        return self.get_requests_data(url, cur_header, proxies)
 
 
 class AmazonReviewRequests(DirectBase):
 
-    def get_amazon_data(self, url):
+    def get_amazon_data(self, url, proxies=None):
         cur_header = review_header.copy()
         cur_header['user-agent'] = self.ua
-        return self.get_requests_data(url, cur_header)
+        return self.get_requests_data(url, cur_header, proxies)

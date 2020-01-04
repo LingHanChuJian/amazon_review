@@ -1,7 +1,7 @@
 import re
 import os
 
-from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL
+from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN
 from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose
 from urllib.parse import urlparse
@@ -47,6 +47,15 @@ def test5():
     print(list(filter(None, [''.join(item).strip().replace('\n', '') if item else '' for item in res])))
 
 
+def test6():
+    res = 'https://www.amazon.com/VATI-Compatible-Silicone-Replacement-iWatch/dp/B07PBYZ1SC?' \
+          'pf_rd_p=c4a36063-ed31-585b-b9d3-e14ee41d7e8c&pf_rd_r=QJ8XXG7002KAVMB4KNNZ&pd_rd_wg=Qfr1q&ref_=pd_gw_ri' \
+          '&pd_rd_w=eZuVZ&pd_rd_r=5afeed1d-d9a7-4cee-b492-aff411ca9402&th=1'
+    cur_path = urlparse(res).path
+    asin = re.search(RE_URL_ASIN, cur_path)
+    return asin.group(1) if asin else ''
+
+
 class Base:
     def __init__(self, data):
         self.data = data
@@ -68,4 +77,5 @@ if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
     # sun.log2()
-    test3()
+    # test3()
+    print(test6())

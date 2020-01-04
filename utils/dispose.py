@@ -228,7 +228,7 @@ class AmazonReviewDispose(BaseDispose):
         data = {}
         buyer_name = self.selector.xpath('//span[@class="a-profile-name"]/text()')
         review_date = self.selector.xpath('//span[@data-hook="review-date"]/text()')
-        review_title = self.selector.xpath('//h1[@id="cr-customer-review"]/text()')
+        review_title = self.selector.xpath('//a[@data-hook="review-title"]//text()')
         review_text = self.selector.xpath('//span[@data-hook="review-body"]//text()')
         review_star = self.selector.xpath('//i[@data-hook="review-star-rating"]/@class')
         data['buyer_name'] = get_data(buyer_name)

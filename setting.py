@@ -92,7 +92,7 @@ RE_STARS = r'(\d+)'
 RE_HELPFUL = r'(\d+)'
 
 # 获取链接里面的ASIN
-RE_URL_ASIN = r'\/dp\/(.*)\/'
+RE_URL_ASIN = r'\/dp\/(.*)'
 
 # 获取价格
 RE_PRICE = r'([0-9,.]+)'
@@ -185,3 +185,5 @@ TIME_CODE = {
 }
 
 STANDARD_TIME = ''
+
+MAX_PROXY_NUM = 2

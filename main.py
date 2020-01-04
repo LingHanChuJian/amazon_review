@@ -7,6 +7,7 @@ from utils.api import *
 from utils.utils import *
 from utils.dispose import *
 from utils.request import *
+from utils.proxies import Proxy
 
 
 class AmazonMain:
@@ -18,6 +19,7 @@ class AmazonMain:
         self.ua = UserAgent().random
         self.review_data = {'review_order_id': data['review_order_id']}
         self.session = AmazonRequests(self.data['amazon_buyer_url'], self.data['country'])
+        self.proxy = Proxy()
 
     def start(self):
         html = self.get_amazon_html()
@@ -59,12 +61,14 @@ class AmazonMain:
 
     def get_amazon_html(self):
         user_header['user-agent'] = self.ua
-        response = self.session.get_amazon_data(self.session.get_user_url(), header=user_header, param=USER_PARAM)
+        response = self.session.get_amazon_data(self.session.get_user_url(),
+                                                header=user_header, param=USER_PARAM, proxies=self.proxy.get_proxies())
         return request_message(response, 'txt')
 
     def get_amazon_review(self):
         reviews_header['user-agent'] = self.ua
-        response = self.session.get_amazon_data(self.session.get_review_url(), header=reviews_header, param=self.param)
+        response = self.session.get_amazon_data(self.session.get_review_url(), header=reviews_header,
+                                                param=self.param, proxies=self.proxy.get_proxies())
         return request_message(response, 'json')
 
     def get_review_data(self):
@@ -100,9 +104,10 @@ class AmazonReviewsMain:
         self.is_bad = True
         self.nice_review_num = 0
         self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'])
+        self.proxy = Proxy()
 
     def get_amazon_html(self):
-        response = self.session.get_amazon_data(self.is_lang, self.get_bad())
+        response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy.get_proxies())
         return request_message(response, 'txt')
 
     def start(self):
@@ -160,8 +165,8 @@ class BaseMain:
         self.session = session
         self.country = country
 
-    def change_address(self):
-        amazon_response = self.session.get_amazon_data(get_amazon_domain(self.country))
+    def change_address(self, proxies=None):
+        amazon_response = self.session.get_amazon_data(get_amazon_domain(self.country), proxies)
         amazon_response = request_message(amazon_response, 'txt')
         if not amazon_response:
             return -5
@@ -176,7 +181,7 @@ class BaseMain:
             cur_data['locationType'] = 'CITY'
             cur_data['city'] = zip_code
             cur_data['cityName'] = zip_code
-        address_response = self.session.post_address_change(cur_data)
+        address_response = self.session.post_address_change(cur_data, proxies)
         address_response = request_message(address_response, 'json')
         print(address_response)
         is_address = 'address' in address_response and 'zipCode' in address_response['address']
@@ -192,14 +197,15 @@ class AmazonFollowMain(BaseMain):
         self.data = data
         self.session = AmazonFollowRequests(self.data['country'], self.data['asin'])
         self.url = self.session.get_follow_url()
+        self.proxy = Proxy()
         super(AmazonFollowMain, self).__init__(self.data['country'], self.session)
 
     def start(self):
         if self.url == self.session.get_follow_url():
-            results = self.change_address()
+            results = self.change_address(self.proxy.get_proxies())
             if type(results) == int:
                 return results
-        follow_response = self.session.get_amazon_data(self.url)
+        follow_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
         follow_response = request_message(follow_response, 'txt')
         if not follow_response:
             return -5
@@ -224,6 +230,7 @@ class AmazonProductDetailsMain(BaseMain):
     def __init__(self, url):
         self.url = url
         self.session = AmazonProductDetailsRequests(self.get_country())
+        self.proxy = Proxy()
         super(AmazonProductDetailsMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
@@ -240,10 +247,10 @@ class AmazonProductDetailsMain(BaseMain):
         return asin.group(1) if asin else ''
 
     def start(self):
-        results = self.change_address()
+        results = self.change_address(self.proxy.get_proxies())
         if type(results) == int:
             return results
-        product_details_response = self.session.get_amazon_data(self.url)
+        product_details_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
         product_details_response = request_message(product_details_response, 'txt')
         if not product_details_response:
             return -5
@@ -260,6 +267,7 @@ class AmazonReviewMain(BaseMain):
     def __init__(self, url):
         self.url = url
         self.session = AmazonReviewRequests(self.get_country())
+        self.proxy = Proxy()
         super(AmazonReviewMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
@@ -271,10 +279,10 @@ class AmazonReviewMain(BaseMain):
         return ''
 
     def start(self):
-        results = self.change_address()
+        results = self.change_address(self.proxy.get_proxies())
         if type(results) == int:
             return results
-        review_response = self.session.get_amazon_data(self.url)
+        review_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
         review_response = request_message(review_response, 'txt')
         if not review_response:
             return -5
