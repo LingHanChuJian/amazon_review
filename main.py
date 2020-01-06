@@ -75,11 +75,13 @@ class AmazonMain:
         for item in self.review['contributions']:
             if item['product']['asin'] == self.data['asin']:
                 text, videos = self.get_text(item['text'])
+                images = self.get_images(item['images'])
                 self.review_data['review_date'] = int(str(item['sortTimestamp'])[:-3])
                 self.review_data['review_title'] = item['title']
                 self.review_data['review_text'] = text
                 self.review_data['review_star'] = item['rating']
-                self.review_data['review_images'] = self.get_images(item['images'])
+                if images:
+                    self.review_data['review_images'] = images
                 if videos:
                     self.review_data['review_videos'] = 1
                 self.review_data['review_url'] = REVIEWS.format(domain=get_amazon_domain(self.data['country']),

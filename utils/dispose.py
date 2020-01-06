@@ -244,8 +244,12 @@ class AmazonReviewDispose(BaseDispose):
         data['review_title'] = get_data(review_title)
         data['review_text'] = get_data(review_text)
         data['review_star'] = self.get_star(review_star)
-        data['review_images'] = self.get_images(review_images)
-        data['review_videos'] = self.get_videos(review_videos)
+        images = self.get_images(review_images)
+        videos = self.get_videos(review_videos)
+        if images:
+            data['review_images'] = images
+        if videos:
+            data['review_videos'] = videos
         return data
 
     @staticmethod
