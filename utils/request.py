@@ -86,6 +86,8 @@ class DirectBase:
     def post_address_change(self, data, proxies=None):
         cur_header = address_header.copy()
         cur_header['user-agent'] = self.ua
+        cur_header['referer'] = get_amazon_domain(self.country)
+        print(self.session.cookies)
         return self.post_data(AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)), cur_header, data, proxies)
 
 

@@ -202,9 +202,9 @@ class BaseMain:
         address_response = request_message(address_response, 'json')
         print(address_response)
         is_address = address_response and 'address' in address_response and 'zipCode' in address_response['address']
-        if not self.country == 'AU' and not is_address:
+        if not self.country == 'AU' and not self.country == 'FR' and not is_address:
             return -7
-        print('国家为AU, 需要登陆才能更换地址') if self.country == 'AU' else print('更换对应国家地址')
+        print('国家为{country}, 需要登陆才能更换地址'.format(country=self.country)) if self.country == 'AU' or self.country == 'FR' else print('更换对应国家地址')
         return ''
 
 
