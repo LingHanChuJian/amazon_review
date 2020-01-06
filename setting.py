@@ -100,6 +100,9 @@ RE_PRICE = r'([0-9,.]+)'
 # 替换指定字符串
 RE_IMAGE_URL = r'_(.*)_'
 
+# 个人主页视频处理
+RE_VIDEOS = r'\[\[VIDEOID:.*\]\]'
+
 # 语言
 LANG_CODE = {
     'CN': 'zh_CN',

@@ -74,15 +74,31 @@ class AmazonMain:
     def get_review_data(self):
         for item in self.review['contributions']:
             if item['product']['asin'] == self.data['asin']:
+                text, videos = self.get_text(item['text'])
                 self.review_data['review_date'] = int(str(item['sortTimestamp'])[:-3])
                 self.review_data['review_title'] = item['title']
-                self.review_data['review_text'] = item['text']
+                self.review_data['review_text'] = text
                 self.review_data['review_star'] = item['rating']
+                self.review_data['review_images'] = self.get_images(item['images'])
+                if videos:
+                    self.review_data['review_videos'] = 1
                 self.review_data['review_url'] = REVIEWS.format(domain=get_amazon_domain(self.data['country']),
                                                                 externalId=item['externalId'])
                 return self.review_data
         else:
             return None
+
+    # 个人主页
+    @staticmethod
+    def get_images(data):
+        return [os.path.basename(item['largeImageUrl']) for item in data] if data else []
+
+    @staticmethod
+    def get_text(data):
+        videos = re.search(RE_VIDEOS, data)
+        if videos:
+            data.replace(videos.group(0), '')
+        return data.replace('<br />', '').strip(), videos
 
     def is_page(self):
         if not self.review or self.review['nextPageToken']:

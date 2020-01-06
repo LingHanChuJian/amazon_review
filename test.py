@@ -1,7 +1,7 @@
 import re
 import os
 
-from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN
+from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN, RE_VIDEOS
 from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose
 from urllib.parse import urlparse
@@ -56,6 +56,16 @@ def test6():
     return asin.group(1) if asin else ''
 
 
+def test7():
+    res = "[[VIDEOID:4335d8ed8c384b2f942c1452379f9ac0]] [[VIDEOID:4335d8ed8c384b2f942c1452379f9ac0]] I want to give special attention and rating to COWIN's " \
+          "AMAZING customer service.<br />I never imagined they could be so kind and understanding and after " \
+          "contacting them I just had to go back and write this thankful review.<br /><br />I'm using the headphones " \
+          "for music, TV, PlayStation and they work great. The noise canceling feature does a nice job for that " \
+          "matter as well."
+    videos = re.search(RE_VIDEOS, res)
+    print(videos)
+
+
 class Base:
     def __init__(self, data):
         self.data = data
@@ -77,5 +87,6 @@ if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
     # sun.log2()
-    test3()
+    # test3()
     # print(test6())
+    test7()
