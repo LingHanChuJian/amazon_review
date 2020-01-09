@@ -1,9 +1,9 @@
 import re
 import os
-
+import json
 from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN, RE_VIDEOS
 from main import AmazonMain
-from utils.dispose import AmazonFollowDispose, AmazonReviewDispose
+from utils.dispose import AmazonFollowDispose, AmazonReviewDispose, AmazonProductDetailsDispose
 from urllib.parse import urlparse
 
 
@@ -32,14 +32,23 @@ def test2():
 def test3():
     with open('amazon.txt', 'r', encoding='utf-8') as f:
         html = f.read()
-        dispose = AmazonReviewDispose('US', html)
+        dispose = AmazonProductDetailsDispose('US', html)
         print(dispose.dispose())
 
 
 def test4():
-    res = re.compile(RE_IMAGE_URL).sub('US150', os.path.basename('https://images-na.ssl-images-amazon.com'
-                                                                 '/images/I/51B9FMLBfGL._SX679_.jpg'))
-    print(res)
+    # json_text = '{"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_.jpg": [442, 499],' \
+    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX466_.jpg": [413, 466],' \
+    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX425_.jpg": [376, 425],' \
+    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX450_.jpg": [399, 450],' \
+    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX355_.jpg": [314, 355]}'
+    try:
+        json_text = ''
+        images = [key for key in json.loads(json_text)]
+        return re.compile(RE_IMAGE_URL).sub('US150', os.path.basename(images[0])) if images else ''
+    except Exception as e:
+        print(e)
+        return ''
 
 
 def test5():
@@ -48,12 +57,10 @@ def test5():
 
 
 def test6():
-    res = 'https://www.amazon.com/VATI-Compatible-Silicone-Replacement-iWatch/dp/B07PBYZ1SC?' \
-          'pf_rd_p=c4a36063-ed31-585b-b9d3-e14ee41d7e8c&pf_rd_r=QJ8XXG7002KAVMB4KNNZ&pd_rd_wg=Qfr1q&ref_=pd_gw_ri' \
-          '&pd_rd_w=eZuVZ&pd_rd_r=5afeed1d-d9a7-4cee-b492-aff411ca9402&th=1'
+    res = 'http://www.amazon.ca/dp/B081R6GTYM?ref=myi_title_dp'
     cur_path = urlparse(res).path
     asin = re.search(RE_URL_ASIN, cur_path)
-    return asin.group(1) if asin else ''
+    return asin.group(1).replace('/', '') if asin else ''
 
 
 def test7():
@@ -64,6 +71,10 @@ def test7():
           "matter as well."
     videos = re.search(RE_VIDEOS, res)
     print(videos)
+
+
+def test8(data):
+    return ' '.join(''.join(data).strip().replace('\n', '').split()) if data else ''
 
 
 class Base:
@@ -89,4 +100,6 @@ if __name__ == '__main__':
     # sun.log2()
     # test3()
     # print(test6())
-    test7()
+    # test7()
+    # print(test4())
+    print(test8('by        adada'))

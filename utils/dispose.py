@@ -1,13 +1,14 @@
 import re
 import os
 import time
+import json
 from lxml import etree
 from setting import *
 from urllib import parse
 
 
 def get_data(data):
-    return ''.join(data).strip().replace('\n', '') if data else ''
+    return ' '.join(''.join(data).strip().replace('\n', '').split()) if data else ''
 
 
 def get_seller(data):
@@ -176,7 +177,7 @@ class AmazonProductDetailsDispose(BaseDispose):
         data = {}
         listing_props = []
         title = self.selector.xpath('//span[@id="productTitle"]/text()')
-        image_url = self.selector.xpath('//div[@id="imgTagWrapperId"]/img/@data-old-hires')
+        image_url = self.selector.xpath('//img[@id="landingImage"]/@data-a-dynamic-image')
         seller_name = self.selector.xpath('//a[@id="sellerProfileTriggerId"]/text()')
         seller_id = self.selector.xpath('//a[@id="sellerProfileTriggerId"]/@href')
         brand = self.selector.xpath('//a[@id="bylineInfo"]/text()')
@@ -222,7 +223,12 @@ class AmazonProductDetailsDispose(BaseDispose):
 
     @staticmethod
     def get_image_url(data):
-        return re.compile(RE_IMAGE_URL).sub('_US150_', os.path.basename(get_data(data)))
+        try:
+            images = [key for key in json.loads(get_data(data))]
+            return re.compile(RE_IMAGE_URL).sub('_US150_', os.path.basename(images[0])) if images else ''
+        except Exception as e:
+            print(e)
+            return ''
 
 
 class AmazonReviewDispose(BaseDispose):

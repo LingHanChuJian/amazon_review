@@ -17,7 +17,7 @@ app = Flask(__name__)
 def app_review():
     try:
         url = request.form['url']
-        if url.find('https://') == -1:
+        if url.find('https://') == -1 and url.find('http://') == -1:
             url = 'https://' + url
         q = Queue()
         t = threading.Thread(target=start_review_download, args=(url, q))
@@ -107,7 +107,7 @@ def app_asin_follow_offer():
 def app_product_details():
     try:
         url = request.form['url']
-        if url.find('https://') == -1:
+        if url.find('https://') == -1 and url.find('http://') == -1:
             url = 'https://' + url
         q = Queue()
         t = threading.Thread(target=start_product_details_download, args=(url, q))

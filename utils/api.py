@@ -82,6 +82,7 @@ product_details_header = asin_follow_offer_header = review_header = {
     'accept-language': 'zh-CN,zh;q=0.9',
     'sec-fetch-mode': 'navigate',
     'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
     'upgrade-insecure-requests': '1',
     'user-agent': ''
 }

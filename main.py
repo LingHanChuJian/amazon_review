@@ -19,7 +19,7 @@ class AmazonMain:
         self.ua = UserAgent().random
         self.review_data = {'review_order_id': data['review_order_id']}
         self.session = AmazonRequests(self.data['amazon_buyer_url'], self.data['country'])
-        self.proxy = Proxy()
+        self.proxy = Proxy().get_proxies()
 
     def start(self):
         html = self.get_amazon_html()
@@ -62,13 +62,13 @@ class AmazonMain:
     def get_amazon_html(self):
         user_header['user-agent'] = self.ua
         response = self.session.get_amazon_data(self.session.get_user_url(),
-                                                header=user_header, param=USER_PARAM, proxies=self.proxy.get_proxies())
+                                                header=user_header, param=USER_PARAM, proxies=self.proxy)
         return request_message(response, 'txt')
 
     def get_amazon_review(self):
         reviews_header['user-agent'] = self.ua
         response = self.session.get_amazon_data(self.session.get_review_url(), header=reviews_header,
-                                                param=self.param, proxies=self.proxy.get_proxies())
+                                                param=self.param, proxies=self.proxy)
         return request_message(response, 'json')
 
     def get_review_data(self):
@@ -122,10 +122,10 @@ class AmazonReviewsMain:
         self.is_bad = True
         self.nice_review_num = 0
         self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'])
-        self.proxy = Proxy()
+        self.proxy = Proxy().get_proxies()
 
     def get_amazon_html(self):
-        response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy.get_proxies())
+        response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy)
         return request_message(response, 'txt')
 
     def start(self):
@@ -190,6 +190,7 @@ class BaseMain:
             return -5
         amazon_dispose = BaseDispose(amazon_response)
         if is_robot(amazon_dispose.get_selector()):
+            print('请求amazon主页, 机器人验证')
             return -6
         cur_data = address_data.copy()
         zip_code = AMAZON_ZIPCODE[self.country]
@@ -216,15 +217,15 @@ class AmazonFollowMain(BaseMain):
         self.data = data
         self.session = AmazonFollowRequests(self.data['country'], self.data['asin'])
         self.url = self.session.get_follow_url()
-        self.proxy = Proxy()
+        self.proxy = Proxy().get_proxies()
         super(AmazonFollowMain, self).__init__(self.data['country'], self.session)
 
     def start(self):
         if self.url == self.session.get_follow_url():
-            results = self.change_address(self.proxy.get_proxies())
+            results = self.change_address(self.proxy)
             if type(results) == int:
                 return results
-        follow_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
+        follow_response = self.session.get_amazon_data(self.url, self.proxy)
         follow_response = request_message(follow_response, 'txt')
         if not follow_response:
             return -5
@@ -249,7 +250,7 @@ class AmazonProductDetailsMain(BaseMain):
     def __init__(self, url):
         self.url = url
         self.session = AmazonProductDetailsRequests(self.get_country())
-        self.proxy = Proxy()
+        self.proxy = Proxy().get_proxies()
         super(AmazonProductDetailsMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
@@ -263,13 +264,13 @@ class AmazonProductDetailsMain(BaseMain):
     def get_asin(self):
         cur_path = urlparse(self.url).path
         asin = re.search(RE_URL_ASIN, cur_path)
-        return asin.group(1) if asin else ''
+        return asin.group(1).replace('/', '') if asin else ''
 
     def start(self):
-        results = self.change_address(self.proxy.get_proxies())
+        results = self.change_address(self.proxy)
         if type(results) == int:
             return results
-        product_details_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
+        product_details_response = self.session.get_amazon_data(self.url, self.proxy)
         product_details_response = request_message(product_details_response, 'txt')
         if not product_details_response:
             return -5
@@ -286,7 +287,7 @@ class AmazonReviewMain(BaseMain):
     def __init__(self, url):
         self.url = url
         self.session = AmazonReviewRequests(self.get_country())
-        self.proxy = Proxy()
+        self.proxy = Proxy().get_proxies()
         super(AmazonReviewMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
@@ -298,10 +299,10 @@ class AmazonReviewMain(BaseMain):
         return ''
 
     def start(self):
-        results = self.change_address(self.proxy.get_proxies())
+        results = self.change_address(self.proxy)
         if type(results) == int:
             return results
-        review_response = self.session.get_amazon_data(self.url, self.proxy.get_proxies())
+        review_response = self.session.get_amazon_data(self.url, self.proxy)
         review_response = request_message(review_response, 'txt')
         if not review_response:
             return -5

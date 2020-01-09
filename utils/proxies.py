@@ -1,9 +1,10 @@
 import time
 import requests
-from setting import MAX_PROXY_NUM
+from setting import MAX_PROXY_NUM, PROXY_PACK
 from utils.utils import request_message
 
-proxy_url = 'http://http.tiqu.qingjuhe.cn/getip?num={num}&type=2&pack=30908&port=1&lb=1&pb=4&regions='
+proxy_url = 'http://webapi.http.zhimacangku.com/getip?num={num}&type=2&pro=&city=0&yys=0&port=1&pack={pack}' \
+            '&ts=1&ys=0&cs=1&lb=1&sb=0&pb=4&mr=2&regions='
 
 proxies_mate = 'http://{host}:{port}'
 
@@ -15,7 +16,7 @@ class Proxy:
     def agent_pool(self):
         if self.agents:
             return self.agents.pop()
-        response = requests.get(proxy_url.format(num=MAX_PROXY_NUM), timeout=20)
+        response = requests.get(proxy_url.format(num=MAX_PROXY_NUM, pack=PROXY_PACK), timeout=20)
         response.encoding = 'utf-8'
         response = request_message(response, 'json')
         print(response)
