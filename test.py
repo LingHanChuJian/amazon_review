@@ -70,7 +70,10 @@ def test7():
           "for music, TV, PlayStation and they work great. The noise canceling feature does a nice job for that " \
           "matter as well."
     videos = re.search(RE_VIDEOS, res)
-    print(videos)
+    if videos:
+        print(videos.group(0))
+        res = res.replace(videos.group(0), '')
+    return res.replace('<br />', '').strip()
 
 
 def test8(data):
@@ -100,6 +103,6 @@ if __name__ == '__main__':
     # sun.log2()
     # test3()
     # print(test6())
-    # test7()
+    print(test7())
     # print(test4())
-    print(test8('by        adada'))
+    # print(test8('by        adada'))

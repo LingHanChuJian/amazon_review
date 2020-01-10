@@ -102,7 +102,7 @@ class AmazonMain:
     def get_text(data):
         videos = re.search(RE_VIDEOS, data)
         if videos:
-            data.replace(videos.group(0), '')
+            data = data.replace(videos.group(0), '')
         return data.replace('<br />', '').strip(), videos
 
     def is_page(self):

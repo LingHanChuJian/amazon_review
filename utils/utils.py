@@ -39,7 +39,7 @@ def request_message(response, mode):
 
 
 def wait():
-    random_time = random.randint(5, 10)
+    random_time = random.randint(1, 3)
     print('等待时间 %s' % random_time)
     time.sleep(random_time)
 

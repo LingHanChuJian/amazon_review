@@ -1,5 +1,5 @@
 # 查找最大页数
-MAX_PAGE = 2
+MAX_PAGE = 5
 
 # 判断差评
 BAD_STARS = 3
