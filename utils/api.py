@@ -63,6 +63,7 @@ address_data = {
 
 address_header = {
     'accept': 'text/html,*/*',
+    'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9',
     'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
     'sec-fetch-mode': 'cors',

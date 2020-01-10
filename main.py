@@ -22,6 +22,8 @@ class AmazonMain:
         self.proxy = Proxy().get_proxies()
 
     def start(self):
+        if not self.proxy:
+            return -8
         html = self.get_amazon_html()
         if not html:
             print('没有数据')
@@ -73,20 +75,21 @@ class AmazonMain:
 
     def get_review_data(self):
         for item in self.review['contributions']:
-            if item['product']['asin'] == self.data['asin']:
-                text, videos = self.get_text(item['text'])
-                images = self.get_images(item['images'])
-                self.review_data['review_date'] = int(str(item['sortTimestamp'])[:-3])
-                self.review_data['review_title'] = item['title']
-                self.review_data['review_text'] = text
-                self.review_data['review_star'] = item['rating']
-                if images:
-                    self.review_data['review_images'] = images
-                if videos:
-                    self.review_data['review_videos'] = 1
-                self.review_data['review_url'] = REVIEWS.format(domain=get_amazon_domain(self.data['country']),
-                                                                externalId=item['externalId'])
-                return self.review_data
+            if 'product' in item:
+                if item['product']['asin'] == self.data['asin']:
+                    text, videos = self.get_text(item['text'])
+                    images = self.get_images(item['images'])
+                    self.review_data['review_date'] = int(str(item['sortTimestamp'])[:-3])
+                    self.review_data['review_title'] = item['title']
+                    self.review_data['review_text'] = text
+                    self.review_data['review_star'] = item['rating']
+                    if images:
+                        self.review_data['review_images'] = images
+                    if videos:
+                        self.review_data['review_videos'] = 1
+                    self.review_data['review_url'] = REVIEWS.format(domain=get_amazon_domain(self.data['country']),
+                                                                    externalId=item['externalId'])
+                    return self.review_data
         else:
             return None
 
@@ -129,6 +132,8 @@ class AmazonReviewsMain:
         return request_message(response, 'txt')
 
     def start(self):
+        if not self.proxy:
+            return -8
         response = self.get_amazon_html()
         if response and is_number(response):
             if response == 404:
@@ -221,6 +226,8 @@ class AmazonFollowMain(BaseMain):
         super(AmazonFollowMain, self).__init__(self.data['country'], self.session)
 
     def start(self):
+        if not self.proxy:
+            return -8
         if self.url == self.session.get_follow_url():
             results = self.change_address(self.proxy)
             if type(results) == int:
@@ -267,6 +274,8 @@ class AmazonProductDetailsMain(BaseMain):
         return asin.group(1).replace('/', '') if asin else ''
 
     def start(self):
+        if not self.proxy:
+            return -8
         results = self.change_address(self.proxy)
         if type(results) == int:
             return results
@@ -299,6 +308,8 @@ class AmazonReviewMain(BaseMain):
         return ''
 
     def start(self):
+        if not self.proxy:
+            return -8
         results = self.change_address(self.proxy)
         if type(results) == int:
             return results

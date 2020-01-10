@@ -30,6 +30,9 @@ REQUEST_STATUS = ({
     'code': -7,
     'msg': '地址更换失败'
 }, {
+    'code': -8,
+    'msg': '获取代理失败'
+}, {
     'code': 200,
     'msg': '请求成功'
 })
@@ -191,4 +194,6 @@ STANDARD_TIME = ''
 
 MAX_PROXY_NUM = 1
 
-PROXY_PACK = 80427
+MAX_PROXY_REQUESTS_NUM = 3
+
+# PROXY_PACK = 80427
