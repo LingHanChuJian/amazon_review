@@ -278,9 +278,14 @@ class AmazonReviewDispose(BaseDispose):
             time_format = TIME_CODE[self.country]
             if type(time_format) == dict:
                 if 'replace' in time_format:
-                    date = date.replace(time_format['replace'], '')
-                for item in time_format['MapMonth']:
-                    date = date.replace(item, time_format['MapMonth'][item])
+                    if type(time_format['replace']) == list:
+                        for replace_item in time_format['replace']:
+                            date = date.replace(replace_item.replace(' ', ''), '')
+                    else:
+                        date = date.replace(time_format['replace'].replace(' ', ''), '')
+                if 'MapMonth' in time_format:
+                    for item in time_format['MapMonth']:
+                        date = date.replace(item, time_format['MapMonth'][item])
                 time_format = time_format['format']
             time_struct = time.strptime(date, time_format)
             return time.strftime(STANDARD_TIME, time_struct) if STANDARD_TIME else int(time.mktime(time_struct))

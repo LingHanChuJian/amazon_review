@@ -235,7 +235,7 @@ class AmazonFollowMain(BaseMain):
         follow_response = self.session.get_amazon_data(self.url, self.proxy)
         follow_response = request_message(follow_response, 'txt')
         if not follow_response:
-            return -5
+            return -9
         follow_dispose = AmazonFollowDispose(follow_response)
         if is_robot(follow_dispose.get_selector()):
             return -6
@@ -282,7 +282,7 @@ class AmazonProductDetailsMain(BaseMain):
         product_details_response = self.session.get_amazon_data(self.url, self.proxy)
         product_details_response = request_message(product_details_response, 'txt')
         if not product_details_response:
-            return -5
+            return -9
         product_details_dispose = AmazonProductDetailsDispose(self.get_country(), product_details_response)
         if is_robot(product_details_dispose.get_selector()):
             return -6
@@ -316,7 +316,7 @@ class AmazonReviewMain(BaseMain):
         review_response = self.session.get_amazon_data(self.url, self.proxy)
         review_response = request_message(review_response, 'txt')
         if not review_response:
-            return -5
+            return -9
         review_dispose = AmazonReviewDispose(self.get_country(), review_response)
         if is_robot(review_dispose.get_selector()):
             return -6
