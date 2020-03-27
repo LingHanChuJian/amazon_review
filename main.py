@@ -323,3 +323,22 @@ class AmazonReviewMain(BaseMain):
         data = review_dispose.dispose()
         data['review_url'] = self.url
         return data
+
+
+class BlackListMain:
+    def __init__(self, data):
+        self.data = data
+        self.session = BlackListRequests(data)
+        self.proxy = Proxy().get_proxies()
+
+    def start(self):
+        if not self.proxy:
+            return -8
+        black_response = self.session.get_black_list(self.proxy)
+        black_response = request_message(black_response, 'txt')
+        if not black_response:
+            return -9
+        black_dispose = BlackListDispose(black_response)
+        data = black_dispose.dispose()
+        data['url'] = self.session.get_black_list_url()
+        return data

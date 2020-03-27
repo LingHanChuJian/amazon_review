@@ -34,6 +34,9 @@ http://127.0.0.1:5000/api/asin_follow_offer
 ### 抓取产品详情信息
 http://127.0.0.1:5000/api/product_details
 
+### 抓取测评黑名单
+http://127.0.0.1:5000/api/black_list
+
 ## review 参数
 `url`       amazon评论链接
 
@@ -70,6 +73,10 @@ http://127.0.0.1:5000/api/product_details
 
 ## product_details 参数
 `url`       amazon产品链接
+
+## black_list 参数
+`field`     参数有 email 邮箱 name 名字 url 亚马逊个人主页 facebook_url Facebook主页 wechat 微信号
+`query`     搜索字段
 
 ## 展示
 

@@ -1,6 +1,9 @@
 import json
 import time
 import random
+import string
+
+from urllib.parse import quote
 from setting import AMAZON_DOMAIN, REQUEST_STATUS
 
 
@@ -52,3 +55,8 @@ def result(code, data=None):
         if item['code'] == code:
             res['msg'] = item['msg']
     return json.dumps(res)
+
+
+# url 编码
+def encode_url(url):
+    return quote(url, safe=string.printable)

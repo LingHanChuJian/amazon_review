@@ -12,6 +12,27 @@ from main import *
 app = Flask(__name__)
 
 
+# 获取黑名单
+@app.route('/api/black_list', methods=['post'])
+def app_black_list():
+    try:
+        data = {
+            'field': request.form['field'],
+            'query': request.form['query'],
+        }
+        q = Queue()
+        t = threading.Thread(target=start_black_list_download, args=(data, q))
+        t.setDaemon(True)
+        t.start()
+        res = q.get()
+        if type(res) == int:
+            return result(res)
+        return result(200, res)
+    except KeyError as e:
+        print(e)
+        return result(-1)
+
+
 # 获取评论链接的评论数据
 @app.route('/api/review', methods=['post'])
 def app_review():
@@ -120,6 +141,12 @@ def app_product_details():
     except KeyError as e:
         print(e)
         return result(-1)
+
+
+def start_black_list_download(data, q):
+    black_list_main = BlackListMain(data)
+    black_list_data = black_list_main.start()
+    q.put(black_list_data)
 
 
 def start_user_review_download(item, q):

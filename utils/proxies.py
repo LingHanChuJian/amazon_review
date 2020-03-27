@@ -3,8 +3,8 @@ import requests
 from setting import MAX_PROXY_NUM, MAX_PROXY_REQUESTS_NUM
 from utils.utils import request_message
 
-proxy_url = 'http://http.tiqu.alicdns.com/getip3?num=1&type=2&pro=&city=0&yys=0&port=11&time=1&ts=1&ys=0&cs=0&lb=1' \
-            '&sb=0&pb=4&mr=2&regions=&gm=4'
+proxy_url = 'http://http.tiqu.alicdns.com/getip3?num={num}&type=2&pro=&city=0&yys=0&port=11&time=1&ts=1&ys=0&cs=0' \
+            '&lb=1&sb=0&pb=4&mr=2&regions=&gm=4'
 
 proxies_mate = 'https://{host}:{port}'
 

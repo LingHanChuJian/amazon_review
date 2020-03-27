@@ -292,3 +292,12 @@ class AmazonReviewDispose(BaseDispose):
         except (TypeError, ValueError, SyntaxError) as e:
             print(e)
             return date
+
+
+class BlackListDispose(BaseDispose):
+
+    def dispose(self):
+        data = {}
+        is_search = self.selector.xpath('//div[@class="no-search-reviewer-exposure-result"]')
+        data['is_search'] = False if is_search else True
+        return data

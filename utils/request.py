@@ -2,7 +2,7 @@ import requests
 from fake_useragent import UserAgent
 
 from utils.api import *
-from utils.utils import get_amazon_domain
+from utils.utils import get_amazon_domain, encode_url
 
 
 class AmazonRequests:
@@ -123,3 +123,23 @@ class AmazonReviewRequests(DirectBase):
         # cur_header['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' \
         #                            '(KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'
         return self.get_requests_data(url, cur_header, proxies)
+
+
+class BlackListRequests:
+    def __init__(self, data):
+        self.data = data
+        self.ua = UserAgent().random
+        self.session = requests.session()
+
+    def get_requests_data(self, url, header, proxies=None):
+        response = self.session.get(url=url, headers=header, timeout=20, proxies=proxies)
+        response.encoding = 'utf-8'
+        return response
+
+    def get_black_list(self, proxies=None):
+        cur_header = black_list_header.copy()
+        cur_header['user-agent'] = self.ua
+        return self.get_requests_data(self.get_black_list_url(), cur_header, proxies)
+
+    def get_black_list_url(self):
+        return encode_url(REVIEWS_BLACK_LIST.format(field=self.data['field'], query=self.data['query']))
