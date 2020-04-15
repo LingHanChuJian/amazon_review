@@ -6,10 +6,10 @@ from utils.utils import get_amazon_domain, encode_url
 
 
 class AmazonRequests:
-    def __init__(self, directed_id, country):
+    def __init__(self, directed_id, country, session):
         self.country = country
         self.directedId = directed_id
-        self.session = requests.Session()
+        self.session = session
 
     def get_user_url(self):
         return USER_URL.format(domain=get_amazon_domain(self.country), directedId=self.directedId)
@@ -33,13 +33,13 @@ class AmazonRequests:
 
 class AmazonUserReviewRequests:
 
-    def __init__(self, country, asin, count):
+    def __init__(self, country, asin, count, session):
         self.page = 1
         self.asin = asin
         self.country = country
         self.count = count
         self.ua = UserAgent().random
-        self.session = requests.session()
+        self.session = session
 
     def get_reviews_url(self):
         return ALL_REVIEWS_URL.format(domain=get_amazon_domain(self.country), asin=self.asin)
@@ -68,10 +68,10 @@ class AmazonUserReviewRequests:
 
 
 class DirectBase:
-    def __init__(self, country):
+    def __init__(self, country, session):
         self.country = country
         self.ua = UserAgent().random
-        self.session = requests.session()
+        self.session = session
 
     def get_requests_data(self, url, header, proxies=None):
         response = self.session.get(url=url, headers=header, timeout=20, proxies=proxies)
@@ -93,10 +93,10 @@ class DirectBase:
 
 
 class AmazonFollowRequests(DirectBase):
-    def __init__(self, country, asin):
+    def __init__(self, country, asin, session):
         self.asin = asin
         self.country = country
-        super(AmazonFollowRequests, self).__init__(self.country)
+        super(AmazonFollowRequests, self).__init__(self.country, session)
 
     def get_follow_url(self):
         return ASIN_FOLLOW_OFFER.format(domain=get_amazon_domain(self.country), asin=self.asin)

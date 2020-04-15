@@ -170,6 +170,7 @@ class AmazonFollowDispose(BaseDispose):
 
 class AmazonProductDetailsDispose(BaseDispose):
     def __init__(self, country, data):
+        self.except_list = ['FR', 'DE', 'ES', 'IT', 'BR']
         self.country = country
         super(AmazonProductDetailsDispose, self).__init__(data)
 
@@ -186,6 +187,8 @@ class AmazonProductDetailsDispose(BaseDispose):
                                     '|//span[@id="price_inside_buybox"]/text()'
                                     '|//span[@id="newBuyBoxPrice"]/text()'
                                     '|//div[@id="buyNew_noncbb"]//text()')
+        star = self.selector.xpath('//span[@data-hook="rating-out-of-text"]/text()')
+        review_count = self.selector.xpath('//div[@data-hook="total-review-count"]//text()')
         twister = self.selector.xpath('//form[@id="twister"]/div')
         if twister:
             for twister_item in twister:
@@ -207,15 +210,31 @@ class AmazonProductDetailsDispose(BaseDispose):
         data['seller_name'] = get_data(seller_name)
         data['seller_id'] = get_seller(seller_id)
         data['listing_props'] = listing_props
+        data['stars'] = self.get_star(star)
+        data['reviews'] = self.get_review_count(review_count)
         return data
 
     def get_price(self, data):
         result = re.search(RE_PRICE, get_data(data))
         price = result.group(1) if result else '0'
-        except_list = ['FR', 'DE', 'ES', 'IT', 'BR']
-        if self.country in except_list:
-            price.replace(',', '.').replace('.', '')
+        if self.country in self.except_list:
+            price = price.replace(',', '.').replace('.', '')
         return float(price.replace(',', ''))
+
+    def get_star(self, data):
+        result = re.compile(RE_PRODUCT_STAR).findall(get_data(data))
+        if self.country == 'JP':
+            result = result[-1] if len(result) == 2 else 0
+        else:
+            result = result[0]
+        return result.replace(',', '.') if self.country in self.except_list else result
+
+    def get_review_count(self, data):
+        result = re.search(RE_PRODUCT_REVIEW, get_data(data))
+        review_count = result.group(1) if result else '0'
+        if self.country in self.except_list:
+            review_count = review_count.replace(',', '.').replace('.', '')
+        return int(review_count.replace(',', ''))
 
     @staticmethod
     def get_prop_name(data):

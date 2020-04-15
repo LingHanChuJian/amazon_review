@@ -101,7 +101,7 @@ RE_HELPFUL = r'(\d+)'
 RE_URL_ASIN = r'\/dp\/((.*)\/|.*)'
 
 # 获取价格
-RE_PRICE = r'([0-9,.]+)'
+RE_PRICE = RE_PRODUCT_STAR = RE_PRODUCT_REVIEW = r'([0-9,.]+)'
 
 # 替换指定字符串
 RE_IMAGE_URL = r'_(.*)_'
@@ -195,8 +195,28 @@ TIME_CODE = {
 
 STANDARD_TIME = ''
 
-MAX_PROXY_NUM = 1
-
 MAX_PROXY_REQUESTS_NUM = 3
+
+MAX_PROXY_POOL_NUM = {
+    'AE': 0,
+    'CN': 0,
+    'JP': 0,
+    'US': 5,
+    'UK': 2,
+    'FR': 2,
+    'DE': 2,
+    'ES': 2,
+    'IT': 2,
+    'CA': 2,
+    'IN': 0,
+    'AU': 0,
+    'GB': 0,
+    'MX': 0,
+    'BR': 0
+    # 'SG': 'https://www.amazon.com.sg'
+}
+
+# 60秒扫描代理一次
+SCANNING_TIME = 60
 
 # PROXY_PACK = 80427

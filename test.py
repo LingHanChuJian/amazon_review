@@ -5,6 +5,7 @@ from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_AS
 from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose, AmazonProductDetailsDispose
 from urllib.parse import urlparse
+from utils.proxies import Proxy
 
 
 def test():
@@ -32,7 +33,7 @@ def test2():
 def test3():
     with open('amazon.txt', 'r', encoding='utf-8') as f:
         html = f.read()
-        dispose = AmazonProductDetailsDispose('US', html)
+        dispose = AmazonProductDetailsDispose('DE', html)
         print(dispose.dispose())
 
 
@@ -103,6 +104,8 @@ if __name__ == '__main__':
     # sun.log2()
     # test3()
     # print(test6())
-    print(test7())
+    # print(test7())
     # print(test4())
     # print(test8('by        adada'))
+    proxies = Proxy()
+    proxies.get_proxies()

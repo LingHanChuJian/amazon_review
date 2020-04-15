@@ -6,6 +6,7 @@ from requests.exceptions import ConnectTimeout
 from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
 from utils.utils import wait, result
+from utils.proxies import Proxy
 from main import *
 
 
@@ -197,5 +198,6 @@ def start_review_download(data, q):
     q.put(review_data)
 
 
+Proxy()
 if __name__ == '__main__':
     app.run(threaded=True)

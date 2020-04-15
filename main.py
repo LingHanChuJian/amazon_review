@@ -18,8 +18,9 @@ class AmazonMain:
         self.review = dict()
         self.ua = UserAgent().random
         self.review_data = {'review_order_id': data['review_order_id']}
-        self.session = AmazonRequests(self.data['amazon_buyer_url'], self.data['country'])
-        self.proxy = Proxy().get_proxies()
+        session, proxy = Proxy().get_proxies(self.data['country'])
+        self.session = AmazonRequests(self.data['amazon_buyer_url'], self.data['country'], session)
+        self.proxy = proxy
 
     def start(self):
         if not self.proxy:
@@ -124,8 +125,9 @@ class AmazonReviewsMain:
         self.is_lang = False
         self.is_bad = True
         self.nice_review_num = 0
-        self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'])
-        self.proxy = Proxy().get_proxies()
+        session, proxy = Proxy().get_proxies(self.data['country'])
+        self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'], session)
+        self.proxy = proxy
 
     def get_amazon_html(self):
         response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy)
@@ -220,9 +222,10 @@ class AmazonFollowMain(BaseMain):
     def __init__(self, data):
         self.all_data = []
         self.data = data
-        self.session = AmazonFollowRequests(self.data['country'], self.data['asin'])
+        session, proxy = Proxy().get_proxies(self.data['country'])
+        self.session = AmazonFollowRequests(self.data['country'], self.data['asin'], session)
         self.url = self.session.get_follow_url()
-        self.proxy = Proxy().get_proxies()
+        self.proxy = proxy
         super(AmazonFollowMain, self).__init__(self.data['country'], self.session)
 
     def start(self):
@@ -256,8 +259,9 @@ class AmazonFollowMain(BaseMain):
 class AmazonProductDetailsMain(BaseMain):
     def __init__(self, url):
         self.url = url
-        self.session = AmazonProductDetailsRequests(self.get_country())
-        self.proxy = Proxy().get_proxies()
+        session, proxy = Proxy().get_proxies(self.get_country())
+        self.session = AmazonProductDetailsRequests(self.get_country(), session)
+        self.proxy = proxy
         super(AmazonProductDetailsMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
@@ -295,8 +299,9 @@ class AmazonProductDetailsMain(BaseMain):
 class AmazonReviewMain(BaseMain):
     def __init__(self, url):
         self.url = url
-        self.session = AmazonReviewRequests(self.get_country())
-        self.proxy = Proxy().get_proxies()
+        session, proxy = Proxy().get_proxies(self.get_country())
+        self.session = AmazonReviewRequests(self.get_country(), session)
+        self.proxy = proxy
         super(AmazonReviewMain, self).__init__(self.get_country(), self.session)
 
     def get_country(self):
