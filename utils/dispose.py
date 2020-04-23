@@ -223,11 +223,14 @@ class AmazonProductDetailsDispose(BaseDispose):
 
     def get_star(self, data):
         result = re.compile(RE_PRODUCT_STAR).findall(get_data(data))
-        if self.country == 'JP':
-            result = result[-1] if len(result) == 2 else 0
+        if result:
+            if self.country == 'JP':
+                result = result[-1] if len(result) == 2 else 0
+            else:
+                result = result[0]
+            return float(result.replace(',', '.') if self.country in self.except_list else result)
         else:
-            result = result[0]
-        return result.replace(',', '.') if self.country in self.except_list else result
+            return 0
 
     def get_review_count(self, data):
         result = re.search(RE_PRODUCT_REVIEW, get_data(data))

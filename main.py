@@ -275,7 +275,7 @@ class AmazonProductDetailsMain(BaseMain):
     def get_asin(self):
         cur_path = urlparse(self.url).path
         asin = re.search(RE_URL_ASIN, cur_path)
-        return asin.group(1).replace('/', '') if asin else ''
+        return asin.group(asin.lastindex).replace('/', '') if asin else ''
 
     def start(self):
         if not self.proxy:

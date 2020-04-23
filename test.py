@@ -1,6 +1,13 @@
 import re
 import os
 import json
+import time
+import random
+import threading
+
+from queue import Queue
+from multiprocessing import cpu_count
+
 from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN, RE_VIDEOS
 from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose, AmazonProductDetailsDispose
@@ -38,15 +45,17 @@ def test3():
 
 
 def test4():
-    # json_text = '{"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_.jpg": [442, 499],' \
-    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX466_.jpg": [413, 466],' \
-    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX425_.jpg": [376, 425],' \
-    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX450_.jpg": [399, 450],' \
-    #             '"https://images-na.ssl-images-amazon.com/images/I/31ZyMRGBoVL._AC_SX355_.jpg": [314, 355]}'
+    json_text = '{"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SY450_.jpg":[450,450],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SX425_.jpg":[425,425],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SX522_.jpg":[522,522],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SX679_.jpg":[679,679],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SX466_.jpg":[466,466],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SX569_.jpg":[569,569],' \
+                '"https://images-na.ssl-images-amazon.com/images/I/71c91AnZLXL._AC_SY355_.jpg":[355,355]}'
     try:
-        json_text = ''
+        # json_text = ''
         images = [key for key in json.loads(json_text)]
-        return re.compile(RE_IMAGE_URL).sub('US150', os.path.basename(images[0])) if images else ''
+        return re.compile(RE_IMAGE_URL).sub('_US150_', os.path.basename(images[0])) if images else ''
     except Exception as e:
         print(e)
         return ''
@@ -58,10 +67,12 @@ def test5():
 
 
 def test6():
-    res = 'http://www.amazon.ca/dp/B081R6GTYM?ref=myi_title_dp'
+    # res = 'http://www.amazon.ca/dp/B081R6GTYM'
+    # res = 'http://www.amazon.ca/dp/B081R6GTYM?ref=myi_title_dp'
+    res = 'https://www.amazon.com/gp/product/B086P4VQSF/ref=ag_xx_cont_xx'
     cur_path = urlparse(res).path
     asin = re.search(RE_URL_ASIN, cur_path)
-    return asin.group(1).replace('/', '') if asin else ''
+    return asin.group(asin.lastindex).replace('/', '') if asin else ''
 
 
 def test7():
@@ -98,14 +109,40 @@ class Sun(Base):
         print(self.name)
 
 
+class ThreadingTest:
+    def __init__(self):
+        self.names = []
+        q = Queue()
+        t_arr = []
+        for item in range(cpu_count()):
+            t = threading.Thread(target=self.get_name, args=(item, q,))
+            t.setDaemon(True)
+            t_arr.append(t)
+            t.start()
+        for t_item in t_arr:
+            t_item.join()
+            self.names.append(q.get())
+        print(self.names)
+
+    @staticmethod
+    def random_num():
+        return random.randint(0, 20)
+
+    def get_name(self, timer, q):
+        print(timer)
+        time.sleep(timer)
+        q.put(self.random_num())
+
+
 if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
     # sun.log2()
     # test3()
-    # print(test6())
+    print(test6())
     # print(test7())
     # print(test4())
     # print(test8('by        adada'))
-    proxies = Proxy()
-    proxies.get_proxies()
+    # proxies = Proxy()
+    # proxies.get_proxies()
+    # ThreadingTest()

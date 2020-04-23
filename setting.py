@@ -98,7 +98,7 @@ RE_STARS = r'(\d+)'
 RE_HELPFUL = r'(\d+)'
 
 # 获取链接里面的ASIN
-RE_URL_ASIN = r'\/dp\/((.*)\/|.*)'
+RE_URL_ASIN = r'\/(dp|product)\/((.*)\/|.*)'
 
 # 获取价格
 RE_PRICE = RE_PRODUCT_STAR = RE_PRODUCT_REVIEW = r'([0-9,.]+)'
@@ -201,13 +201,13 @@ MAX_PROXY_POOL_NUM = {
     'AE': 0,
     'CN': 0,
     'JP': 0,
-    'US': 5,
-    'UK': 2,
-    'FR': 2,
-    'DE': 2,
-    'ES': 2,
-    'IT': 2,
-    'CA': 2,
+    'US': 1,
+    'UK': 0,
+    'FR': 0,
+    'DE': 0,
+    'ES': 0,
+    'IT': 0,
+    'CA': 0,
     'IN': 0,
     'AU': 0,
     'GB': 0,
@@ -215,6 +215,25 @@ MAX_PROXY_POOL_NUM = {
     'BR': 0
     # 'SG': 'https://www.amazon.com.sg'
 }
+
+# MAX_PROXY_POOL_NUM = {
+#     'AE': 0,
+#     'CN': 0,
+#     'JP': 0,
+#     'US': 1,
+#     'UK': 0,
+#     'FR': 0,
+#     'DE': 0,
+#     'ES': 0,
+#     'IT': 0,
+#     'CA': 0,
+#     'IN': 0,
+#     'AU': 0,
+#     'GB': 0,
+#     'MX': 0,
+#     'BR': 0
+#     # 'SG': 'https://www.amazon.com.sg'
+# }
 
 # 60秒扫描代理一次
 SCANNING_TIME = 60
