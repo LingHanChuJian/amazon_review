@@ -201,7 +201,7 @@ MAX_PROXY_POOL_NUM = {
     'AE': 0,
     'CN': 0,
     'JP': 0,
-    'US': 1,
+    'US': 0,
     'UK': 0,
     'FR': 0,
     'DE': 0,

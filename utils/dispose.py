@@ -207,8 +207,8 @@ class AmazonProductDetailsDispose(BaseDispose):
         data['category'] = get_data(category)
         data['price'] = self.get_price(price)
         data['image_url'] = self.get_image_url(image_url)
-        data['seller_name'] = get_data(seller_name)
-        data['seller_id'] = get_seller(seller_id)
+        data['seller_name'] = get_data(seller_name[0]) if seller_name else ''
+        data['seller_id'] = get_seller(seller_id[0]) if seller_id else ''
         data['listing_props'] = listing_props
         data['stars'] = self.get_star(star)
         data['reviews'] = self.get_review_count(review_count)

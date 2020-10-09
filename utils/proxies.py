@@ -139,6 +139,7 @@ class Proxy:
 
     def get_proxies(self, country=None):
         if country:
+            country = country.upper()
             if country in self.agents:
                 index = random.randint(0, len(self.agents[country]) - 1)
                 agent = self.agents[country][index]
@@ -147,6 +148,8 @@ class Proxy:
                     self.agents[country].pop(index)
                     self.add_agent()
                     return self.get_proxies(country)
+                else:
+                    print('直接取出代理')
                 return agent['session'], agent['proxies']
             else:
                 results = self.agent_pool(country, proxy_num=1)
