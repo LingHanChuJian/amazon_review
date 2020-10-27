@@ -5,10 +5,8 @@ from flask import Flask, request
 from requests.exceptions import ConnectTimeout
 from urllib3.exceptions import ConnectTimeoutError, MaxRetryError
 
-from utils.utils import wait, result
-from utils.proxies import Proxy
 from main import *
-
+from utils.log import log
 
 app = Flask(__name__)
 
@@ -16,6 +14,7 @@ app = Flask(__name__)
 # 获取黑名单
 @app.route('/api/black_list', methods=['post'])
 def app_black_list():
+    log('/api/black_list 获取黑名单')
     try:
         data = {
             'field': request.form['field'],
@@ -37,6 +36,7 @@ def app_black_list():
 # 获取评论链接的评论数据
 @app.route('/api/review', methods=['post'])
 def app_review():
+    log('/api/review 获取评论链接的评论数据')
     try:
         url = request.form['url']
         if url.find('https://') == -1 and url.find('http://') == -1:
@@ -57,6 +57,7 @@ def app_review():
 # 获取个人主页对应asin评论
 @app.route('/api/user_review', methods=['post'])
 def app_user_review():
+    log('/api/user_review 获取个人主页对应asin评论')
     try:
         review = eval(request.form['review'])
         thread_list = list()
@@ -86,6 +87,7 @@ def app_user_review():
 # 首页无差评达成条件
 @app.route('/api/not_bad_review', methods=['post'])
 def app_not_bad_review():
+    log('/api/not_bad_review 首页无差评达成条件')
     try:
         data = {
             'country': request.form['country'],
@@ -107,6 +109,7 @@ def app_not_bad_review():
 
 @app.route('/api/asin_follow_offer', methods=['post'])
 def app_asin_follow_offer():
+    log('/api/asin_follow_offer')
     try:
         data = {
             'country': request.form['country'],
@@ -127,6 +130,7 @@ def app_asin_follow_offer():
 
 @app.route('/api/product_details', methods=['post'])
 def app_product_details():
+    log('/api/asin_follow_offer 获取产品详情')
     try:
         url = request.form['url']
         if url.find('https://') == -1 and url.find('http://') == -1:
@@ -198,6 +202,5 @@ def start_review_download(data, q):
     q.put(review_data)
 
 
-Proxy()
 if __name__ == '__main__':
     app.run(threaded=True)

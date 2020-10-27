@@ -130,6 +130,10 @@ class AmazonBadDispose:
         else:
             return False
 
+    def get_next_url(self):
+        next_url = self.selector.xpath('//li[@class="a-last"]/@href')
+        return '%s%s' % (AMAZON_DOMAIN[self.country.upper()], get_data(next_url)) if next_url else None
+
     def get_review_details_url(self, data):
         return '%s%s' % (AMAZON_DOMAIN[self.country.upper()], get_data(data)) if data else ''
 
@@ -314,6 +318,10 @@ class AmazonReviewDispose(BaseDispose):
         except (TypeError, ValueError, SyntaxError) as e:
             print(e)
             return date
+
+    def get_next_url(self):
+        next_url = self.selector.xpath('//li[@class="a-last"]/a/@href')
+        return '%s%s' % (AMAZON_DOMAIN[self.country.upper()], get_data(next_url)) if next_url else None
 
 
 class BlackListDispose(BaseDispose):

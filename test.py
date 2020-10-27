@@ -13,6 +13,7 @@ from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose, AmazonProductDetailsDispose
 from urllib.parse import urlparse
 from utils.proxies import Proxy
+from utils.log import log
 
 
 def test():
@@ -138,11 +139,16 @@ if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
     # sun.log2()
-    test3()
+    # test3()
     # print(test6())
     # print(test7())
     # print(test4())
     # print(test8('by        adada'))
-    # proxies = Proxy()
+    # proxies = Proxy().get_proxies()
+    # print(proxies)
     # proxies.get_proxies()
     # ThreadingTest()
+    # log(1, {'a': 'b'}, [1,2,3,4])
+    # log('你好')
+    print(os.path.dirname(__file__))
+

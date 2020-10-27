@@ -8,6 +8,7 @@ from utils.utils import *
 from utils.dispose import *
 from utils.request import *
 from utils.proxies import Proxy
+from utils.log import log
 
 
 class AmazonMain:
@@ -19,6 +20,7 @@ class AmazonMain:
         self.ua = UserAgent().random
         self.review_data = {'review_order_id': data['review_order_id']}
         session, proxy = Proxy().get_proxies(self.data['country'])
+        # session, proxy = Proxy().get_proxies()
         self.session = AmazonRequests(self.data['amazon_buyer_url'], self.data['country'], session)
         self.proxy = proxy
 
@@ -27,21 +29,21 @@ class AmazonMain:
             return -8
         html = self.get_amazon_html()
         if not html:
-            print('没有数据')
+            log('没有数据')
             return None
         dispose = AmazonDispose(html)
         if is_robot(dispose.get_selector()):
-            print('机器人')
+            log('机器人')
             return None
         token, types, name, rank = dispose.get_token(), dispose.get_type(), dispose.get_name(), dispose.get_rank()
         if name:
             self.review_data['buyer_name'] = name
         if rank:
             self.review_data['buyer_rank'] = rank
-        print(name, rank)
+        log(name, rank)
         if not token or not types:
             return None
-        print(token, types)
+        log(token, types)
         return self.get_data(token, ','.join(eval(types)))
 
     def get_data(self, token, types):
@@ -50,14 +52,14 @@ class AmazonMain:
         if not self.get_review_data():
             if self.is_page():
                 if self.page >= MAX_PAGE:
-                    print('查找到最大页数')
+                    log('查找到最大页数')
                     return self.review_data
-                print('查找下一页数据')
+                log('查找下一页数据')
                 wait()
                 self.page += 1
                 return self.get_data(token, types)
             else:
-                print('所有评论查找完成')
+                log('所有评论查找完成')
                 return self.review_data
         else:
             return self.review_data
@@ -126,39 +128,41 @@ class AmazonReviewsMain:
         self.is_bad = True
         self.nice_review_num = 0
         session, proxy = Proxy().get_proxies(self.data['country'])
+        # session, proxy = Proxy().get_proxies()
         self.session = AmazonUserReviewRequests(data['country'], data['asin'], data['count'], session)
         self.proxy = proxy
 
-    def get_amazon_html(self):
-        response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy)
+    def get_amazon_html(self, url=None):
+        response = self.session.get_amazon_data(self.is_lang, self.get_bad(), proxies=self.proxy, url=url)
         return request_message(response, 'txt')
 
-    def start(self):
+    def start(self, url=None):
         if not self.proxy:
             return -8
-        response = self.get_amazon_html()
+        response = self.get_amazon_html(url)
         if response and is_number(response):
             if response == 404:
-                print('asin 不存在')
+                log('asin 不存在')
                 return None
         dispose = AmazonBadDispose(self.data['country'], response, self.data['count'])
         if is_robot(dispose.get_selector()):
-            print('机器人验证')
+            log('机器人验证')
+            wait()
             return self.start()
         if dispose.is_lang():
             self.is_lang = True
-            print('语言不符合, 重新请求')
+            log('语言不符合, 重新请求')
             wait()
             return self.start()
         dispose.set_nice_review_num(self.nice_review_num)
         dict_data = dispose.dispose()
         self.nice_review_num = dispose.get_nice_review_num()
-        # print(dict_data)
-        # print(self.nice_review_num)
+        # log(dict_data)
+        # log(self.nice_review_num)
         if dict_data:
             self.all_data.extend(dict_data)
         else:
-            print('没有数据写入')
+            log('没有数据写入')
         if self.data['count'] == 1 and self.nice_review_num >= NICE_REVIEW_NUM:
             if self.all_data:
                 return self.all_data
@@ -170,12 +174,12 @@ class AmazonReviewsMain:
             else:
                 return -3
         if dispose.is_next_page():
-            print('请求下一页')
+            log('请求下一页')
             self.session.next_page()
             wait()
-            return self.start()
+            return self.start(dispose.get_next_url())
         else:
-            print('评论获取完毕')
+            log('评论获取完毕')
             return -3
 
     def set_bad(self, is_bad=True):
@@ -197,7 +201,7 @@ class BaseMain:
             return -5
         amazon_dispose = BaseDispose(amazon_response)
         if is_robot(amazon_dispose.get_selector()):
-            print('请求amazon主页, 机器人验证')
+            log('请求amazon主页, 机器人验证')
             return -6
         cur_data = address_data.copy()
         zip_code = AMAZON_ZIPCODE[self.country]
@@ -207,14 +211,14 @@ class BaseMain:
             cur_data['locationType'] = 'CITY'
             cur_data['city'] = zip_code
             cur_data['cityName'] = zip_code
-        print(cur_data)
+        log(cur_data)
         address_response = self.session.post_address_change(cur_data, proxies)
         address_response = request_message(address_response, 'json')
-        print(address_response)
+        log(address_response)
         is_address = address_response and 'address' in address_response and 'zipCode' in address_response['address']
         if not self.country == 'AU' and not self.country == 'FR' and not is_address:
             return -7
-        print('国家为{country}, 需要登陆才能更换地址'.format(country=self.country)) if self.country == 'AU' or self.country == 'FR' else print('更换对应国家地址')
+        log('国家为{country}, 需要登陆才能更换地址'.format(country=self.country)) if self.country == 'AU' or self.country == 'FR' else log('更换对应国家地址')
         return ''
 
 
@@ -223,6 +227,7 @@ class AmazonFollowMain(BaseMain):
         self.all_data = []
         self.data = data
         session, proxy = Proxy().get_proxies(self.data['country'])
+        # session, proxy = Proxy().get_proxies()
         self.session = AmazonFollowRequests(self.data['country'], self.data['asin'], session)
         self.url = self.session.get_follow_url()
         self.proxy = proxy
@@ -243,7 +248,7 @@ class AmazonFollowMain(BaseMain):
         if is_robot(follow_dispose.get_selector()):
             return -6
         data = follow_dispose.dispose()
-        print(data)
+        log(data)
         self.all_data.extend(data)
         if follow_dispose.get_next_page():
             self.url = ASIN_FOLLOW_OFFER_NEXT.format(domain=get_amazon_domain(self.data['country']),
@@ -260,6 +265,7 @@ class AmazonProductDetailsMain(BaseMain):
     def __init__(self, url):
         self.url = url
         session, proxy = Proxy().get_proxies(self.get_country())
+        # session, proxy = Proxy().get_proxies()
         self.session = AmazonProductDetailsRequests(self.get_country(), session)
         self.proxy = proxy
         super(AmazonProductDetailsMain, self).__init__(self.get_country(), self.session)
@@ -300,6 +306,7 @@ class AmazonReviewMain(BaseMain):
     def __init__(self, url):
         self.url = url
         session, proxy = Proxy().get_proxies(self.get_country())
+        # session, proxy = Proxy().get_proxies()
         self.session = AmazonReviewRequests(self.get_country(), session)
         self.proxy = proxy
         super(AmazonReviewMain, self).__init__(self.get_country(), self.session)

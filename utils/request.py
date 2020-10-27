@@ -44,9 +44,9 @@ class AmazonUserReviewRequests:
     def get_reviews_url(self):
         return ALL_REVIEWS_URL.format(domain=get_amazon_domain(self.country), asin=self.asin)
 
-    def get_amazon_data(self, is_lang=False, is_bad=True, proxies=None):
+    def get_amazon_data(self, is_lang=False, is_bad=True, proxies=None, url=None):
         all_reviews_header['user-agent'] = self.ua
-        response = self.session.get(url=self.get_reviews_url(), headers=all_reviews_header,
+        response = self.session.get(url=url if url else self.get_reviews_url(), headers=all_reviews_header,
                                     params=self.get_all_review_param(is_lang, is_bad), timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
@@ -87,8 +87,6 @@ class DirectBase:
         cur_header = address_header.copy()
         cur_header['user-agent'] = self.ua
         cur_header['referer'] = get_amazon_domain(self.country)
-        print(cur_header)
-        print(self.session.cookies)
         return self.post_data(AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)), cur_header, data, proxies)
 
 
