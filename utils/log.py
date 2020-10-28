@@ -8,7 +8,7 @@ file = '%(filename)s.txt'
 # 获取文件路径
 def get_path():
     cur_time = time.strftime('%Y-%m-%d')
-    cur_dir_path = os.path.join(os.path.dirname(__file__), 'log')
+    cur_dir_path = os.path.join(os.path.dirname(__file__), '..', 'log')
     if not os.path.exists(cur_dir_path):
         os.makedirs(cur_dir_path)
     cur_path = os.path.join(cur_dir_path, file % {'filename': cur_time})

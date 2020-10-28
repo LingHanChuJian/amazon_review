@@ -149,6 +149,7 @@ if __name__ == '__main__':
     # proxies.get_proxies()
     # ThreadingTest()
     # log(1, {'a': 'b'}, [1,2,3,4])
-    # log('你好')
-    print(os.path.dirname(__file__))
+    log('你好')
+    # print(os.path.dirname(__file__))
+    # print(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'log'))
 

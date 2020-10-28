@@ -205,21 +205,19 @@ class BaseMain:
             return -6
         cur_data = address_data.copy()
         zip_code = AMAZON_ZIPCODE[self.country]
-        cur_data['zipCode'] = zip_code
-        if self.country == 'AE':
-            del cur_data['zipCode']
-            cur_data['locationType'] = 'CITY'
-            cur_data['city'] = zip_code
-            cur_data['cityName'] = zip_code
+        cur_data['district'] = zip_code
+        cur_data['countryCode'] = zip_code
         log(cur_data)
         address_response = self.session.post_address_change(cur_data, proxies)
-        address_response = request_message(address_response, 'json')
-        log(address_response)
-        is_address = address_response and 'address' in address_response and 'zipCode' in address_response['address']
-        if not self.country == 'AU' and not self.country == 'FR' and not is_address:
-            return -7
-        log('国家为{country}, 需要登陆才能更换地址'.format(country=self.country)) if self.country == 'AU' or self.country == 'FR' else log('更换对应国家地址')
-        return ''
+        # address_response.status_code = 200
+        # address_response = request_message(address_response, 'json')
+        # log(address_response)
+        # is_address = address_response and 'address' in address_response and 'zipCode' in address_response['address']
+        # if not self.country == 'AU' and not self.country == 'FR' and not is_address:
+        #     return -7
+        # log('国家为{country}, 需要登陆才能更换地址'.format(country=self.country)) if self.country == 'AU' or self.country == 'FR' else log('更换对应国家地址')
+        return '' if address_response.status_code == 200 else -7
+
 
 
 class AmazonFollowMain(BaseMain):

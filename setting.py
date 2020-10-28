@@ -61,21 +61,21 @@ AMAZON_DOMAIN = {
 }
 
 AMAZON_ZIPCODE = {
-    'AE': 'Fujairah',
-    'CN': '615299',
-    'JP': '922-0337',
-    'US': '60616',
-    'UK': 'EC1A 1HQ',
-    'FR': '97460',
-    'DE': '01731',
-    'ES': '28039',
-    'IT': '00144',
-    'CA': 'T0H 4E0',
-    'IN': '110034',
-    'AU': '2060',
-    'GB': 'EC1A 1HQ',
-    'MX': '02860',
-    'BR': '40301-110'
+    'AE': 'AE',
+    'CN': 'CN',
+    'JP': 'JP',
+    'US': 'UM',
+    'UK': 'GB',
+    'FR': 'FR',
+    'DE': 'DE',
+    'ES': 'ES',
+    'IT': 'IT',
+    'CA': 'CA',
+    'IN': 'IN',
+    'AU': 'AU',
+    'GB': 'GB',
+    'MX': 'MX',
+    'BR': 'BR'
     # 'SG': ''
 }
 

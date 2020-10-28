@@ -130,7 +130,7 @@ def app_asin_follow_offer():
 
 @app.route('/api/product_details', methods=['post'])
 def app_product_details():
-    log('/api/asin_follow_offer 获取产品详情')
+    log('/api/product_details 获取产品详情')
     try:
         url = request.form['url']
         if url.find('https://') == -1 and url.find('http://') == -1:

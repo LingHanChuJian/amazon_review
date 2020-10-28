@@ -57,12 +57,14 @@ all_reviews_header = {
 AMAZON_ADDRESS = '{domain}/gp/delivery/ajax/address-change.html'
 
 address_data = {
-    'locationType': 'LOCATION_INPUT',
-    'zipCode': '',
+    'locationType': 'COUNTRY',
+    'district': '',
+    'countryCode': '',
     'storeContext': 'generic',
     'deviceType': 'web',
     'pageType': 'Gateway',
-    'actionSource': 'glow'
+    'actionSource': 'glow',
+    'almBrandId': 'undefined'
 }
 
 address_header = {
