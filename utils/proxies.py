@@ -13,7 +13,7 @@ from utils.utils import request_message, get_amazon_domain, is_robot, wait
 from utils.api import amazon_header
 from utils.log import log
 
-proxy_url = 'http://ip.ipjldl.com/index.php/api/entry?method=proxyServer.generate_api_url&packid=1&fa=0&fetch_key=&' \
+proxy_url = 'http://ip.ipjldl.com/index.php/api/entry?method=proxyServer.generate_api_url&packid=0&fa=0&fetch_key=&' \
             'groupid=0&qty={num}&time=1&pro=&city=&port=1&format=json&ss=5&css=&ipport=1&et=1&dt=1&specialTxt=3&' \
             'specialJson=&usertype=2'
 
@@ -76,7 +76,8 @@ class Proxy:
                 return proxies_array.pop()
         else:
             self.proxies_num += 1
-            log('请求代理失败, 正在重试...重试次数为: ', self.proxies_num)
+            log('请求代理失败: ', response['msg'])
+            log('正在重试...重试次数为: ', self.proxies_num)
             if self.proxies_num < MAX_PROXY_REQUESTS_NUM:
                 wait()
                 return self.agent_pool(country, proxy_num)

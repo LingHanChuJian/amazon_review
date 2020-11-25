@@ -40,6 +40,10 @@ class AmazonDispose:
         rank = re.search(RE_RANK, self.content, re.M)
         return '' if not rank else rank.group(1)
 
+    def get_address_csrf_token(self):
+        csrf_token = re.search(RE_ADDRESS_CSRF_TOKEN, self.content, re.M)
+        return '' if not csrf_token else csrf_token.group(1)
+
     def get_selector(self):
         return etree.HTML(self.content)
 

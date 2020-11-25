@@ -203,12 +203,20 @@ class BaseMain:
         if is_robot(amazon_dispose.get_selector()):
             log('请求amazon主页, 机器人验证')
             return -6
-        cur_data = address_data.copy()
+        address_dom_response = self.session.get_address_html(proxies)
+        address_dom_response = request_message(address_dom_response, 'txt')
+        if not address_dom_response:
+            return -9
+        address_dom_dispose = AmazonDispose(address_dom_response)
+        address_csrf_token = address_dom_dispose.get_address_csrf_token()
+        if not address_csrf_token:
+            return -10
+        cur_address_data = address_data.copy()
         zip_code = AMAZON_ZIPCODE[self.country]
-        cur_data['district'] = zip_code
-        cur_data['countryCode'] = zip_code
-        log(cur_data)
-        address_response = self.session.post_address_change(cur_data, proxies)
+        cur_address_data['district'] = zip_code
+        cur_address_data['countryCode'] = zip_code
+        log(cur_address_data)
+        address_response = self.session.post_address_change(address_csrf_token, cur_address_data, proxies)
         # address_response.status_code = 200
         # address_response = request_message(address_response, 'json')
         # log(address_response)

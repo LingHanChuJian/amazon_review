@@ -8,7 +8,7 @@ import threading
 from queue import Queue
 from multiprocessing import cpu_count
 
-from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN, RE_VIDEOS
+from setting import RE_TOKEN, RE_TYPE, RE_NAME, RE_RANK, RE_IMAGE_URL, RE_URL_ASIN, RE_VIDEOS, RE_ADDRESS_CSRF_TOKEN
 from main import AmazonMain
 from utils.dispose import AmazonFollowDispose, AmazonReviewDispose, AmazonProductDetailsDispose
 from urllib.parse import urlparse
@@ -135,6 +135,15 @@ class ThreadingTest:
         q.put(self.random_num())
 
 
+def test9():
+    with open('amazon.txt', 'r', encoding='utf-8') as f:
+        html = f.read()
+        csrf_token = re.search(RE_ADDRESS_CSRF_TOKEN, html, re.M).group(1)
+        # gEG9QAvrHIR/qTzQrzhtsE4lt1Cy8eUdHLDEPBMAAAAMAAAAAF+qWfFyYXcAAAAA
+        # .group(1)
+        print(csrf_token)
+
+
 if __name__ == '__main__':
     # sun = Sun('凌寒初见')
     # sun.log()
@@ -149,7 +158,8 @@ if __name__ == '__main__':
     # proxies.get_proxies()
     # ThreadingTest()
     # log(1, {'a': 'b'}, [1,2,3,4])
-    log('你好')
+    # log('你好')
+    test9()
     # print(os.path.dirname(__file__))
     # print(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'log'))
 

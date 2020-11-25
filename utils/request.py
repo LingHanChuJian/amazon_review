@@ -73,8 +73,8 @@ class DirectBase:
         self.ua = UserAgent().random
         self.session = session
 
-    def get_requests_data(self, url, header, proxies=None):
-        response = self.session.get(url=url, headers=header, timeout=20, proxies=proxies)
+    def get_requests_data(self, url, header, proxies=None, data=None):
+        response = self.session.get(url=url, params=data, headers=header, timeout=20, proxies=proxies)
         response.encoding = 'utf-8'
         return response
 
@@ -83,10 +83,23 @@ class DirectBase:
         response.encoding = 'utf-8'
         return response
 
-    def post_address_change(self, data, proxies=None):
+    def get_address_html(self, proxies=None):
         cur_header = address_header.copy()
+        del cur_header['anti-csrftoken-a2z']
+        del cur_header['content-type']
+        del cur_header['contenttype']
         cur_header['user-agent'] = self.ua
         cur_header['referer'] = get_amazon_domain(self.country)
+        print(cur_header)
+        return self.get_requests_data(AMAZON_ADDRESS_DOM.format(domain=get_amazon_domain(self.country)), cur_header,
+                                      data=address_dom_data, proxies=proxies)
+
+    def post_address_change(self, token, data, proxies=None):
+        cur_header = address_header.copy()
+        cur_header['user-agent'] = self.ua
+        cur_header['anti-csrftoken-a2z'] = token
+        cur_header['referer'] = get_amazon_domain(self.country)
+        print(cur_header)
         return self.post_data(AMAZON_ADDRESS.format(domain=get_amazon_domain(self.country)), cur_header, data, proxies)
 
 

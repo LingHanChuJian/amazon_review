@@ -54,6 +54,14 @@ all_reviews_header = {
 }
 
 # asin 跟卖信息
+AMAZON_ADDRESS_DOM = '{domain}/gp/glow/get-address-selections.html'
+
+address_dom_data = {
+    'deviceType': 'desktop',
+    'pageType': 'Gateway',
+    'storeContext': 'NoStoreName'
+}
+
 AMAZON_ADDRESS = '{domain}/gp/delivery/ajax/address-change.html'
 
 address_data = {
@@ -72,10 +80,12 @@ address_header = {
     'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9',
     'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    'contenttype': 'application/x-www-form-urlencoded;charset=utf-8',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
     'x-requested-with': 'XMLHttpRequest',
-    'user-agent': ''
+    'user-agent': '',
+    'anti-csrftoken-a2z': ''
 }
 
 ASIN_FOLLOW_OFFER = '{domain}/gp/offer-listing/{asin}'

@@ -22,7 +22,7 @@ REQUEST_STATUS = ({
     'msg': '连接超时'
 }, {
     'code': -5,
-    'msg': '请求amazon主頁数据失败'
+    'msg': '请求amazon主页数据失败'
 }, {
     'code': -6,
     'msg': '机器人验证'
@@ -35,6 +35,9 @@ REQUEST_STATUS = ({
 }, {
     'code': -9,
     'msg': '请求頁面数据失败'
+}, {
+    'code': -10,
+    'msg': '获取地址token失败'
 }, {
     'code': 200,
     'msg': '请求成功'
@@ -108,6 +111,9 @@ RE_IMAGE_URL = r'_(.*)_'
 
 # 个人主页视频处理
 RE_VIDEOS = r'\[\[VIDEOID:.*\]\]'
+
+# 切换地址 验证 token
+RE_ADDRESS_CSRF_TOKEN = r'CSRF_TOKEN : "(\S*)?"'
 
 # 语言
 LANG_CODE = {
