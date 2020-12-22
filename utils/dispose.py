@@ -226,7 +226,7 @@ class AmazonProductDetailsDispose(BaseDispose):
         result = re.search(RE_PRICE, get_data(data))
         price = result.group(1) if result else '0'
         if self.country in self.except_list:
-            price = price.replace(',', '.').replace('.', '')
+            price = price.replace('.', '').replace(',', '.')
         return float(price.replace(',', ''))
 
     def get_star(self, data):
